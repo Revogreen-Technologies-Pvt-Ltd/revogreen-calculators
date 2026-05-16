@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revogreen Engineering Calculators</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f2;
+      --surface: #ffffff;
+      --surface2: #f0f0ec;
+      --border: rgba(0,0,0,0.1);
+      --border-strong: rgba(0,0,0,0.2);
+      --text: #1a1a18;
+      --text-muted: #6b6b67;
+      --text-hint: #9b9b97;
+      --green: #1a7a4a;
+      --green-light: #e8f5ee;
+      --green-border: rgba(26,122,74,0.25);
+      --red: #c0392b;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141412;
+        --surface: #1e1e1c;
+        --surface2: #252523;
+        --border: rgba(255,255,255,0.08);
+        --border-strong: rgba(255,255,255,0.15);
+        --text: #e8e8e4;
+        --text-muted: #8a8a86;
+        --text-hint: #5a5a58;
+        --green: #2ecc71;
+        --green-light: rgba(46,204,113,0.08);
+        --green-border: rgba(46,204,113,0.2);
+      }
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 15px;
+    }
+
+    /* Top bar */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 0.5px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      height: 58px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      width: 34px;
+      height: 34px;
+      background: var(--green);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo svg { width: 18px; height: 18px; }
+
+    .brand-block { flex: 1; }
+    .brand-name {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .brand-sub {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .topbar-tag {
+      font-size: 11px;
+      background: var(--green-light);
+      color: var(--green);
+      border: 0.5px solid var(--green-border);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Nav tabs */
+    .nav {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 6px;
+    }
+
+    .nav-tab {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-radius: var(--radius);
+      transition: all 0.15s;
+      font-family: var(--sans);
+      text-align: center;
+    }
+
+    .nav-tab.active {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .nav-tab:hover:not(.active):not(.soon) {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .nav-tab.soon {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Calculator grid */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 640px) {
+      .calc-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+    }
+
+    .card-label {
+      font-size: 11px;
+      color: var(--text-hint);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+
+    /* Solve for buttons */
+    .solve-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .solve-btn {
+      padding: 7px 4px;
+      font-size: 12px;
+      border: 0.5px solid var(--border-strong);
+      background: var(--surface2);
+      border-radius: var(--radius);
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      font-weight: 500;
+      font-family: var(--mono);
+      text-align: center;
+    }
+
+    .solve-btn.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .solve-btn:hover:not(.active) {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* Fields */
+    .field { margin-bottom: 14px; }
+
+    .field label {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .field input {
+      flex: 1;
+      padding: 9px 12px;
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: var(--mono);
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -moz-appearance: textfield;
+    }
+
+    .field input::-webkit-outer-spin-button,
+    .field input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .field input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px var(--green-light);
+    }
+
+    .field input.computed {
+      background: var(--surface2);
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .unit {
+      font-size: 12px;
+      color: var(--text-hint);
+      font-family: var(--mono);
+      min-width: 28px;
+    }
+
+    /* Formula */
+    .formula-row {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .formula-label {
+      font-size: 11px;
+      color: var(--text-hint);
+    }
+
+    .formula-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--surface2);
+      padding: 4px 9px;
+      border-radius: var(--radius);
+      color: var(--text-muted);
+    }
+
+    .error {
+      font-size: 12px;
+      color: var(--red);
+      margin-top: 8px;
+      font-family: var(--mono);
+    }
+
+    /* Diagram */
+    .diagram-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 8px 0 4px;
+    }
+
+    /* Results */
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .result-chip {
+      background: var(--surface2);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+    }
+
+    .rc-label {
+      font-size: 10px;
+      color: var(--text-hint);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 3px;
+    }
+
+    .rc-val {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      font-family: var(--mono);
+    }
+
+    .rc-val.highlight { color: var(--green); }
+
+    .rc-sub {
+      font-size: 11px;
+      color: var(--text-hint);
+      margin-top: 1px;
+    }
+
+    /* Coming soon */
+    .coming-card {
+      background: var(--surface);
+      border: 0.5px dashed var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .coming-card .icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    .coming-card h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .coming-card p {
+      font-size: 13px;
+      color: var(--text-hint);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 12px;
+      color: var(--text-hint);
+      border-top: 0.5px solid var(--border);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 2L3 7v6l7 5 7-5V7L10 2z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M10 8v4M8 10h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="brand-block">
+      <div class="brand-name">Revogreen Technologies</div>
+      <div class="brand-sub">Engineering Calculators</div>
+    </div>
+    <div class="topbar-tag">Internal Tool</div>
+  </div>
+
+  <div class="container">
+
+    <div class="nav">
+      <button class="nav-tab active" onclick="switchTab('vdiv', this)">Voltage Divider</button>
+      <button class="nav-tab soon" title="Coming soon">Ohm's Law</button>
+      <button class="nav-tab soon" title="Coming soon">Battery C-Rate</button>
+      <button class="nav-tab soon" title="Coming soon">Power Dissipation</button>
+    </div>
+
+    <!-- Voltage Divider -->
+    <div class="tab-panel active" id="tab-vdiv">
+      <div class="calc-grid">
+
+        <!-- Inputs -->
+        <div class="card">
+          <div class="card-label">Solve for</div>
+          <div class="solve-row">
+            <button class="solve-btn active" onclick="setSolve('vout', this)">Vout</button>
+            <button class="solve-btn" onclick="setSolve('r1', this)">R1</button>
+            <button class="solve-btn" onclick="setSolve('r2', this)">R2</button>
+            <button class="solve-btn" onclick="setSolve('vin', this)">Vin</button>
+          </div>
+
+          <div class="field">
+            <label>Input Voltage — Vin</label>
+            <div class="field-row">
+              <input type="number" id="vin" placeholder="e.g. 12" oninput="calculate()" />
+              <span class="unit">V</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Resistor R1 (upper / series)</label>
+            <div class="field-row">
+              <input type="number" id="r1" placeholder="e.g. 10000" oninput="calculate()" />
+              <span class="unit">Ω</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Resistor R2 (lower / to GND)</label>
+            <div class="field-row">
+              <input type="number" id="r2" placeholder="e.g. 10000" oninput="calculate()" />
+              <span class="unit">Ω</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Output Voltage — Vout</label>
+            <div class="field-row">
+              <input type="number" id="vout" placeholder="computed" class="computed" readonly />
+              <span class="unit">V</span>
+            </div>
+          </div>
+
+          <div id="err" class="error" style="display:none"></div>
+
+          <div class="formula-row">
+            <span class="formula-label">Formula</span>
+            <span class="formula-tag">Vout = Vin × R2 / (R1 + R2)</span>
+          </div>
+        </div>
+
+        <!-- Diagram + Results -->
+        <div>
+          <div class="card" style="margin-bottom: 14px;">
+            <div class="card-label">Circuit Diagram</div>
+            <div class="diagram-wrap">
+              <svg id="diagram" viewBox="0 0 200 280" width="200" height="280" xmlns="http://www.w3.org/2000/svg" style="font-family: 'IBM Plex Mono', monospace;">
+                <text id="d-vin" x="100" y="20" text-anchor="middle" font-size="12" fill="#6b6b67">Vin</text>
+                <line x1="100" y1="26" x2="100" y2="52" stroke="#6b6b67" stroke-width="1.5"/>
+                <rect x="76" y="52" width="48" height="66" rx="4" fill="none" stroke="#1a7a4a" stroke-width="1.5"/>
+                <text x="100" y="80" text-anchor="middle" font-size="11" fill="#1a7a4a" font-weight="500">R1</text>
+                <text id="d-r1" x="100" y="96" text-anchor="middle" font-size="10" fill="#1a7a4a">—</text>
+                <line x1="100" y1="118" x2="100" y2="145" stroke="#6b6b67" stroke-width="1.5"/>
+                <circle cx="100" cy="145" r="4" fill="#1a7a4a"/>
+                <line x1="100" y1="145" x2="162" y2="145" stroke="#6b6b67" stroke-width="1"/>
+                <text id="d-vout" x="172" y="149" font-size="11" fill="#6b6b67">Vout</text>
+                <rect x="76" y="149" width="48" height="66" rx="4" fill="none" stroke="#9b9b97" stroke-width="1.5"/>
+                <text x="100" y="177" text-anchor="middle" font-size="11" fill="#9b9b97" font-weight="500">R2</text>
+                <text id="d-r2" x="100" y="193" text-anchor="middle" font-size="10" fill="#9b9b97">—</text>
+                <line x1="100" y1="215" x2="100" y2="238" stroke="#6b6b67" stroke-width="1.5"/>
+                <line x1="70" y1="238" x2="130" y2="238" stroke="#6b6b67" stroke-width="1.5"/>
+                <line x1="80" y1="246" x2="120" y2="246" stroke="#6b6b67" stroke-width="1.2"/>
+                <line x1="88" y1="254" x2="112" y2="254" stroke="#6b6b67" stroke-width="1"/>
+                <text x="100" y="270" text-anchor="middle" font-size="11" fill="#9b9b97">GND</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Results</div>
+            <div class="result-grid">
+              <div class="result-chip">
+                <div class="rc-label">Output Voltage</div>
+                <div class="rc-val highlight" id="res-vout">—</div>
+                <div class="rc-sub">volts</div>
+              </div>
+              <div class="result-chip">
+                <div class="rc-label">Ratio (Vout/Vin)</div>
+                <div class="rc-val" id="res-ratio">—</div>
+                <div class="rc-sub">dimensionless</div>
+              </div>
+              <div class="result-chip">
+                <div class="rc-label">Current (I)</div>
+                <div class="rc-val" id="res-i">—</div>
+                <div class="rc-sub" id="res-i-unit">—</div>
+              </div>
+              <div class="result-chip">
+                <div class="rc-label">Power (total)</div>
+                <div class="rc-val" id="res-p">—</div>
+                <div class="rc-sub" id="res-p-unit">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Coming soon tabs -->
+    <div class="tab-panel" id="tab-ohm">
+      <div class="coming-card">
+        <div class="icon">⚡</div>
+        <h3>Ohm's Law Calculator</h3>
+        <p>Coming soon — solve for V, I, or R.</p>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-crate">
+      <div class="coming-card">
+        <div class="icon">🔋</div>
+        <h3>Battery C-Rate Calculator</h3>
+        <p>Coming soon — charge/discharge rate from capacity.</p>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-power">
+      <div class="coming-card">
+        <div class="icon">🌡️</div>
+        <h3>Power Dissipation Calculator</h3>
+        <p>Coming soon — thermal derating and component sizing.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    Revogreen Technologies Pvt Ltd &nbsp;·&nbsp; Internal Engineering Tool &nbsp;·&nbsp; Not for external distribution
+  </footer>
+
+  <script>
+    let solveFor = 'vout';
+    const tabIds = ['vdiv', 'ohm', 'crate', 'power'];
+
+    function switchTab(id, btn) {
+      if (btn && btn.classList.contains('soon')) return;
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      const panel = document.getElementById('tab-' + id);
+      if (panel) panel.classList.add('active');
+      if (btn) btn.classList.add('active');
+    }
+
+    function setSolve(target, btn) {
+      solveFor = target;
+      document.querySelectorAll('.solve-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const fields = ['vin', 'r1', 'r2', 'vout'];
+      fields.forEach(f => {
+        const el = document.getElementById(f);
+        if (f === target) {
+          el.classList.add('computed');
+          el.readOnly = true;
+          el.value = '';
+          el.placeholder = 'computed';
+        } else {
+          el.classList.remove('computed');
+          el.readOnly = false;
+          const defaults = { vin: 'e.g. 12', r1: 'e.g. 10000', r2: 'e.g. 10000', vout: 'e.g. 5' };
+          el.placeholder = defaults[f];
+        }
+      });
+      calculate();
+    }
+
+    function fmtR(v) {
+      if (v >= 1e6) return (v / 1e6).toFixed(3) + ' MΩ';
+      if (v >= 1e3) return (v / 1e3).toFixed(3) + ' kΩ';
+      return v.toFixed(1) + ' Ω';
+    }
+
+    function reset() {
+      ['res-vout', 'res-ratio', 'res-i', 'res-p'].forEach(id => {
+        document.getElementById(id).textContent = '—';
+      });
+      document.getElementById('res-i-unit').textContent = '—';
+      document.getElementById('res-p-unit').textContent = '—';
+    }
+
+    function showErr(msg) {
+      reset();
+      const errEl = document.getElementById('err');
+      errEl.textContent = msg;
+      errEl.style.display = 'block';
+    }
+
+    function clearErr() {
+      document.getElementById('err').style.display = 'none';
+    }
+
+    function calculate() {
+      clearErr();
+
+      const vin   = parseFloat(document.getElementById('vin').value);
+      const r1    = parseFloat(document.getElementById('r1').value);
+      const r2    = parseFloat(document.getElementById('r2').value);
+      const vout  = parseFloat(document.getElementById('vout').value);
+
+      let cVin = vin, cR1 = r1, cR2 = r2, cVout = vout;
+
+      try {
+        if (solveFor === 'vout') {
+          if (isNaN(vin) || isNaN(r1) || isNaN(r2)) return reset();
+          if (r1 + r2 === 0) return showErr('R1 + R2 cannot be zero');
+          cVout = vin * r2 / (r1 + r2);
+          document.getElementById('vout').value = parseFloat(cVout.toFixed(4));
+
+        } else if (solveFor === 'vin') {
+          if (isNaN(vout) || isNaN(r1) || isNaN(r2)) return reset();
+          if (r2 === 0) return showErr('R2 cannot be zero');
+          cVin = vout * (r1 + r2) / r2;
+          document.getElementById('vin').value = parseFloat(cVin.toFixed(4));
+
+        } else if (solveFor === 'r1') {
+          if (isNaN(vin) || isNaN(r2) || isNaN(vout)) return reset();
+          if (vout <= 0) return showErr('Vout must be greater than 0');
+          cR1 = r2 * (vin - vout) / vout;
+          if (cR1 < 0) return showErr('Invalid: Vout must be less than Vin');
+          document.getElementById('r1').value = parseFloat(cR1.toFixed(2));
+
+        } else if (solveFor === 'r2') {
+          if (isNaN(vin) || isNaN(r1) || isNaN(vout)) return reset();
+          if (vin - vout === 0) return showErr('Vin and Vout cannot be equal');
+          cR2 = r1 * vout / (vin - vout);
+          if (cR2 < 0) return showErr('Invalid: Vout must be less than Vin');
+          document.getElementById('r2').value = parseFloat(cR2.toFixed(2));
+        }
+
+        const ratio  = cVout / cVin;
+        const totalR = cR1 + cR2;
+        const iA     = cVin / totalR;
+        const pW     = cVin * iA;
+
+        document.getElementById('res-vout').textContent = isNaN(cVout) ? '—' : cVout.toFixed(4) + ' V';
+        document.getElementById('res-ratio').textContent = isNaN(ratio) ? '—' : ratio.toFixed(5);
+
+        if (!isNaN(iA) && isFinite(iA)) {
+          if (iA < 0.001) {
+            document.getElementById('res-i').textContent = (iA * 1e6).toFixed(2);
+            document.getElementById('res-i-unit').textContent = 'µA';
+          } else if (iA < 1) {
+            document.getElementById('res-i').textContent = (iA * 1000).toFixed(3);
+            document.getElementById('res-i-unit').textContent = 'mA';
+          } else {
+            document.getElementById('res-i').textContent = iA.toFixed(4);
+            document.getElementById('res-i-unit').textContent = 'A';
+          }
+        } else {
+          document.getElementById('res-i').textContent = '—';
+          document.getElementById('res-i-unit').textContent = '—';
+        }
+
+        if (!isNaN(pW) && isFinite(pW)) {
+          if (pW >= 1) {
+            document.getElementById('res-p').textContent = pW.toFixed(3);
+            document.getElementById('res-p-unit').textContent = 'W total';
+          } else {
+            document.getElementById('res-p').textContent = (pW * 1000).toFixed(2);
+            document.getElementById('res-p-unit').textContent = 'mW total';
+          }
+        } else {
+          document.getElementById('res-p').textContent = '—';
+          document.getElementById('res-p-unit').textContent = '—';
+        }
+
+        document.getElementById('d-vin').textContent  = isNaN(cVin)  ? 'Vin'  : cVin.toFixed(2) + ' V';
+        document.getElementById('d-vout').textContent = isNaN(cVout) ? 'Vout' : cVout.toFixed(2) + ' V';
+        document.getElementById('d-r1').textContent   = isNaN(cR1)   ? '—'   : fmtR(cR1);
+        document.getElementById('d-r2').textContent   = isNaN(cR2)   ? '—'   : fmtR(cR2);
+
+      } catch (e) {
+        showErr('Calculation error');
+      }
+    }
+  </script>
+
+</body>
+</html>
