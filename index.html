@@ -6,163 +6,206 @@
   <title>Revogreen Engineering Calculators</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #f5f5f2; --surface: #ffffff; --surface2: #f0f0ec;
-      --border: rgba(0,0,0,0.1); --border-strong: rgba(0,0,0,0.18);
-      --text: #1a1a18; --text-muted: #6b6b67; --text-hint: #9b9b97;
-      --green: #1a7a4a; --green-light: #e8f5ee; --green-border: rgba(26,122,74,0.25);
-      --red: #c0392b; --blue: #0057b8; --blue-light: #e0ecff;
-      --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
-      --radius: 8px; --radius-lg: 12px;
+      --bg:#0d0d0f; --surface:#141416; --surface2:#1c1c20; --surface3:#242428;
+      --border:rgba(255,255,255,0.06); --border-strong:rgba(255,255,255,0.13);
+      --text:#f0f0ee; --text-muted:#888884; --text-hint:#4a4a48;
+      --green:#00e87a; --green-dim:rgba(0,232,122,0.12); --green-border:rgba(0,232,122,0.28);
+      --amber:#ffb300; --amber-dim:rgba(255,179,0,0.1);
+      --red:#ff4d4d; --red-dim:rgba(255,77,77,0.1);
+      --blue:#4d9fff; --blue-dim:rgba(77,159,255,0.1);
+      --purple:#b97fff;
+      --mono:'JetBrains Mono',monospace;
+      --sans:'IBM Plex Sans',sans-serif;
+      --radius:6px; --radius-lg:10px;
     }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #141412; --surface: #1e1e1c; --surface2: #252523;
-        --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.15);
-        --text: #e8e8e4; --text-muted: #8a8a86; --text-hint: #5a5a58;
-        --green: #2ecc71; --green-light: rgba(46,204,113,0.08); --green-border: rgba(46,204,113,0.2);
-        --blue: #4a9eff; --blue-light: rgba(74,158,255,0.1);
-      }
-    }
-    body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
+    body { font-family:var(--sans); background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; font-size:15px; }
+    body::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image:linear-gradient(rgba(0,232,122,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,122,0.025) 1px,transparent 1px);
+      background-size:40px 40px; }
 
-    /* TOPBAR */
-    .topbar { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 14px; height: 58px; position: sticky; top: 0; z-index: 10; }
-    .logo { width: 34px; height: 34px; background: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .logo svg { width: 18px; height: 18px; }
-    .brand-block { flex: 1; }
-    .brand-name { font-size: 12px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
-    .brand-sub { font-size: 14px; font-weight: 500; color: var(--text); }
-    .topbar-tag { font-size: 11px; background: var(--green-light); color: var(--green); border: 0.5px solid var(--green-border); padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+    /* ── TOPBAR ── */
+    .topbar { position:sticky; top:0; z-index:20; background:rgba(13,13,15,0.92); backdrop-filter:blur(12px);
+      border-bottom:0.5px solid var(--border); padding:0 2rem; display:flex; align-items:center; gap:14px; height:54px; }
+    .logo { width:32px; height:32px; background:var(--green); border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .logo svg { width:17px; height:17px; }
+    .brand-name { font-size:11px; color:var(--text-hint); letter-spacing:0.12em; text-transform:uppercase; font-weight:500; font-family:var(--mono); }
+    .brand-sub  { font-size:13px; font-weight:500; color:var(--text); }
+    .brand-block { flex:1; }
+    .topbar-tag { font-size:10px; background:var(--green-dim); color:var(--green); border:0.5px solid var(--green-border); padding:3px 10px; border-radius:20px; font-family:var(--mono); }
 
-    /* LAYOUT */
-    .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+    /* ── NAV ── */
+    .container { max-width:1100px; margin:0 auto; padding:1.5rem 2rem; position:relative; z-index:1; }
+    .nav { display:flex; gap:4px; margin-bottom:1.5rem; background:var(--surface); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:5px; flex-wrap:wrap; }
+    .nav-tab { flex:1; min-width:110px; padding:7px 8px; font-size:11px; font-weight:500; cursor:pointer; border:none; background:none; color:var(--text-muted); border-radius:var(--radius); transition:all 0.15s; font-family:var(--sans); text-align:center; }
+    .nav-tab.active { background:var(--green); color:#0d0d0f; font-weight:600; }
+    .nav-tab:hover:not(.active) { background:var(--surface2); color:var(--text); }
 
-    /* NAV */
-    .nav { display: flex; gap: 4px; margin-bottom: 1.5rem; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 6px; flex-wrap: wrap; }
-    .nav-tab { flex: 1; min-width: 120px; padding: 8px 10px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--text-muted); border-radius: var(--radius); transition: all 0.15s; font-family: var(--sans); text-align: center; }
-    .nav-tab.active { background: var(--green); color: #fff; }
-    .nav-tab:hover:not(.active) { background: var(--surface2); color: var(--text); }
+    /* ── TAB PANELS ── */
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
 
-    /* TAB PANELS */
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+    /* ── SHARED CARD ── */
+    .card { background:var(--surface); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:14px; position:relative; overflow:hidden; }
+    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(0,232,122,0.18),transparent); }
+    .card:last-child { margin-bottom:0; }
+    .card-label { font-family:var(--mono); font-size:9px; color:var(--text-hint); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .card-label::after { content:''; flex:1; height:0.5px; background:var(--border); }
+    .card-title { font-size:14px; font-weight:500; color:var(--text); border-bottom:0.5px solid var(--border); padding-bottom:10px; margin-bottom:14px; }
+    .subtitle-text { font-size:12px; color:var(--text-muted); margin-bottom:16px; font-family:var(--mono); }
 
-    /* SHARED CARD */
-    .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 16px; }
-    .card-title { font-size: 14px; font-weight: 500; color: var(--text); border-bottom: 0.5px solid var(--border); padding-bottom: 10px; margin-bottom: 14px; }
-    .card-label { font-size: 11px; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.09em; font-weight: 500; margin-bottom: 14px; }
-    .subtitle-text { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
-
-    /* FORM ELEMENTS */
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
-    .hint { font-size: 11px; color: var(--text-hint); margin-top: 3px; }
-    .field-row { display: flex; gap: 8px; align-items: center; }
-    .field-row input, .field-row select { flex: 1; }
+    /* ── FORM ── */
+    .form-group { margin-bottom:13px; }
+    .form-group label { display:block; font-family:var(--mono); font-size:10px; color:var(--text-muted); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:5px; }
+    .hint { font-family:var(--mono); font-size:10px; color:var(--text-hint); margin-top:3px; }
+    .field-row { display:flex; gap:7px; align-items:center; }
+    .field-row input, .field-row select { flex:1; }
     input[type="number"], input[type="text"], select {
-      width: 100%; padding: 9px 12px; border: 0.5px solid var(--border-strong);
-      border-radius: var(--radius); font-size: 13px; font-family: var(--mono);
-      background: var(--surface); color: var(--text); outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s; -moz-appearance: textfield;
+      width:100%; padding:8px 11px; border:0.5px solid var(--border-strong); border-radius:var(--radius);
+      font-size:13px; font-family:var(--mono); background:var(--surface2); color:var(--text); outline:none;
+      transition:border-color 0.15s,box-shadow 0.15s; -moz-appearance:textfield;
     }
-    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; }
-    input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-light); }
-    .unit { font-size: 12px; color: var(--text-hint); font-family: var(--mono); min-width: 32px; }
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance:none; }
+    input:focus, select:focus { border-color:var(--green); box-shadow:0 0 0 2px var(--green-dim); }
+    select option { background:var(--surface2); }
+    .unit { font-size:11px; color:var(--text-hint); font-family:var(--mono); min-width:30px; }
 
-    /* BUTTONS */
-    .btn { padding: 9px 16px; border-radius: var(--radius); border: none; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--sans); transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
-    .btn-primary { background: var(--green); color: #fff; }
-    .btn-primary:hover { opacity: 0.9; }
-    .btn-secondary { background: var(--surface2); color: var(--text-muted); border: 0.5px solid var(--border-strong); }
-    .btn-secondary:hover { color: var(--text); }
-    .btn-blue { background: var(--blue); color: #fff; }
-    .btn-blue:hover { opacity: 0.9; }
-    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 10px; }
-    .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    /* ── BUTTONS ── */
+    .btn { padding:8px 14px; border-radius:var(--radius); border:none; font-size:12px; font-weight:500; cursor:pointer; font-family:var(--sans); transition:all 0.15s; display:inline-flex; align-items:center; gap:5px; }
+    .btn-primary { background:var(--green); color:#0d0d0f; }
+    .btn-primary:hover { opacity:0.88; }
+    .btn-secondary { background:var(--surface2); color:var(--text-muted); border:0.5px solid var(--border-strong); }
+    .btn-secondary:hover { color:var(--text); }
+    .btn-blue { background:var(--blue); color:#fff; }
+    .btn-row { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 8px; }
+    .btn-group { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:10px; }
 
-    /* GRID */
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @media(max-width:640px) { .two-col { grid-template-columns: 1fr; } .nav-tab { min-width: 80px; font-size: 11px; } }
+    /* ── LAYOUT GRIDS ── */
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .stm-grid { display:grid; grid-template-columns:320px 1fr; gap:16px; }
+    @media(max-width:700px) { .two-col,.stm-grid { grid-template-columns:1fr; } }
 
-    /* SOLVE BUTTONS (voltage divider) */
-    .solve-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 18px; }
-    .solve-btn { padding: 7px 4px; font-size: 12px; border: 0.5px solid var(--border-strong); background: var(--surface2); border-radius: var(--radius); cursor: pointer; color: var(--text-muted); transition: all 0.15s; font-weight: 500; font-family: var(--mono); text-align: center; }
-    .solve-btn.active { background: var(--green); border-color: var(--green); color: #fff; }
-    .solve-btn:hover:not(.active) { border-color: var(--green); color: var(--green); }
-    .computed { background: var(--surface2) !important; color: var(--green) !important; font-weight: 500; }
+    /* ── SOLVE BUTTONS (Voltage Divider) ── */
+    .solve-row { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:5px; margin-bottom:16px; }
+    .solve-btn { padding:7px 4px; font-size:11px; border:0.5px solid var(--border-strong); background:var(--surface2); border-radius:var(--radius); cursor:pointer; color:var(--text-muted); transition:all 0.15s; font-weight:500; font-family:var(--mono); text-align:center; }
+    .solve-btn.active { background:var(--green); border-color:var(--green); color:#0d0d0f; }
+    .solve-btn:hover:not(.active) { border-color:var(--green); color:var(--green); }
+    .computed { background:var(--surface2) !important; color:var(--green) !important; font-weight:500; }
 
-    /* RESULT CHIPS */
-    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .result-chip { background: var(--surface2); border-radius: var(--radius); padding: 10px 12px; }
-    .rc-label { font-size: 10px; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; }
-    .rc-val { font-size: 17px; font-weight: 500; color: var(--text); font-family: var(--mono); }
-    .rc-val.highlight { color: var(--green); }
-    .rc-sub { font-size: 11px; color: var(--text-hint); margin-top: 1px; }
+    /* ── RESULT CHIPS ── */
+    .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .result-chip { background:var(--surface2); border-radius:var(--radius); padding:10px 12px; }
+    .rc-label { font-size:9px; color:var(--text-hint); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:3px; font-family:var(--mono); }
+    .rc-val { font-size:16px; font-weight:600; color:var(--text); font-family:var(--mono); }
+    .rc-val.g { color:var(--green); }
+    .rc-sub { font-size:10px; color:var(--text-hint); margin-top:1px; font-family:var(--mono); }
 
-    /* FORMULA */
-    .formula-row { margin-top: 12px; padding-top: 12px; border-top: 0.5px solid var(--border); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .formula-tag { font-family: var(--mono); font-size: 11px; background: var(--surface2); padding: 4px 9px; border-radius: var(--radius); color: var(--text-muted); }
-    .formula-label { font-size: 11px; color: var(--text-hint); }
-    .error-msg { font-size: 12px; color: var(--red); margin-top: 8px; font-family: var(--mono); }
+    /* ── FORMULA ── */
+    .formula-row { margin-top:12px; padding-top:12px; border-top:0.5px solid var(--border); display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .formula-tag { font-family:var(--mono); font-size:11px; background:var(--surface2); padding:4px 9px; border-radius:var(--radius); color:var(--text-muted); }
+    .formula-label { font-size:11px; color:var(--text-hint); font-family:var(--mono); }
+    .error-msg { font-size:11px; color:var(--red); margin-top:7px; font-family:var(--mono); }
 
-    /* EDV RESULT BOX */
-    .result-box { background: var(--surface2); border-radius: var(--radius); padding: 12px 14px; border-left: 3px solid var(--green); margin-bottom: 10px; }
-    .result-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-    .result-value { font-size: 22px; font-weight: bold; color: var(--green); font-family: var(--mono); }
-    .result-unit { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
+    /* ── DIAGRAM ── */
+    .diagram-wrap { display:flex; justify-content:center; padding:8px 0; }
 
-    /* VOLTAGE SCALE */
-    .voltage-scale { border-radius: var(--radius); padding: 12px; border: 0.5px solid var(--border); }
-    .scale-bar { height: 260px; background: linear-gradient(to bottom, #2db84a 0%, #ffc107 50%, #e74c3c 100%); border-radius: 4px; position: relative; border: 1px solid #999; }
-    .threshold-marker { position: absolute; width: 100%; left: 0; height: 2px; background: white; border: 1px dashed rgba(255,255,255,0.6); }
-    .threshold-label { position: absolute; right: -145px; width: 136px; font-size: 10px; font-weight: 600; color: var(--text); background: var(--surface); padding: 3px 6px; border-radius: 3px; border: 0.5px solid var(--border); transform: translateY(-6px); }
-    .threshold-voltage { font-size: 12px; font-weight: bold; color: var(--green); }
+    /* ── EDV ── */
+    .result-box { background:var(--surface2); border-radius:var(--radius); padding:11px 13px; border-left:3px solid var(--green); margin-bottom:9px; }
+    .result-label { font-size:10px; color:var(--text-muted); text-transform:uppercase; margin-bottom:3px; font-family:var(--mono); letter-spacing:0.06em; }
+    .result-value { font-size:20px; font-weight:bold; color:var(--green); font-family:var(--mono); }
+    .result-unit { font-size:10px; color:var(--text-hint); margin-top:2px; font-family:var(--mono); }
+    .voltage-scale { border-radius:var(--radius); padding:10px; border:0.5px solid var(--border); }
+    .scale-bar { height:240px; background:linear-gradient(to bottom,#2db84a 0%,#ffc107 50%,#e74c3c 100%); border-radius:4px; position:relative; border:1px solid #444; }
+    .threshold-marker { position:absolute; width:100%; left:0; height:2px; background:white; border:1px dashed rgba(255,255,255,0.5); }
+    .threshold-label { position:absolute; right:-130px; width:124px; font-size:10px; font-weight:600; color:var(--text); background:var(--surface); padding:2px 5px; border-radius:3px; border:0.5px solid var(--border); transform:translateY(-6px); font-family:var(--mono); }
+    .threshold-voltage { font-size:11px; font-weight:bold; color:var(--green); }
+    .scale-table { width:100%; font-size:11px; border-collapse:collapse; font-family:var(--mono); }
+    .scale-table td { padding:6px 7px; border-bottom:0.5px solid var(--border); }
+    .scale-table tr:last-child td { border-bottom:none; }
+    .info-box { background:var(--blue-dim,rgba(77,159,255,0.08)); border-left:3px solid var(--blue); padding:9px 11px; border-radius:var(--radius); font-size:12px; color:var(--text-muted); margin-bottom:13px; font-family:var(--mono); }
 
-    /* BQ SECTION TITLE */
-    .bq-section { font-size: 12px; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.05em; margin: 16px 0 8px; border-bottom: 0.5px solid var(--blue-light); padding-bottom: 4px; }
-    .form-row { display: flex; align-items: center; margin: 8px 0; gap: 10px; }
-    .form-row label { flex: 0 0 200px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
-    .form-row input, .form-row select { flex: 1; }
+    /* ── BQ ── */
+    .bq-section { font-size:11px; font-weight:600; color:var(--blue); text-transform:uppercase; letter-spacing:0.06em; margin:14px 0 7px; border-bottom:0.5px solid rgba(77,159,255,0.15); padding-bottom:4px; font-family:var(--mono); }
+    .bq-form-row { display:flex; align-items:center; margin:7px 0; gap:10px; }
+    .bq-form-row label { flex:0 0 200px; font-size:11px; color:var(--text-muted); font-family:var(--mono); }
+    .bq-form-row input, .bq-form-row select { flex:1; }
+    .bq-output { margin-top:12px; padding:12px 14px; border-radius:var(--radius); background:var(--surface2); border:0.5px solid var(--border); font-size:12px; min-height:36px; font-family:var(--mono); }
+    .bq-output h4 { margin:0 0 7px; font-size:12px; font-weight:600; color:var(--text); }
+    .bq-output p { margin:3px 0; }
+    .output-bold { font-weight:700; color:var(--text); }
+    .aold-text { color:#e05555; font-weight:700; }
+    .ascd-text { color:var(--green); font-weight:700; }
+    .aold-reg { color:#e05555; font-weight:700; font-family:var(--mono); }
+    .ascd-reg { color:var(--green); font-weight:700; font-family:var(--mono); }
+    .mono-output { background:#0a0a0c; color:#e5e7eb; padding:13px; border-radius:var(--radius); font-family:var(--mono); font-size:12px; white-space:pre-line; margin-top:10px; }
 
-    /* BQ OUTPUT */
-    .bq-output { margin-top: 14px; padding: 14px; border-radius: var(--radius); background: var(--surface2); border: 0.5px solid var(--border); font-size: 13px; min-height: 40px; }
-    .bq-output h4 { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--text); }
-    .bq-output p { margin: 4px 0; }
-    .aold-text { color: #d9534f; font-weight: 700; }
-    .ascd-text { color: #2ecc71; font-weight: 700; }
-    .aold-reg { color: #d9534f; font-weight: 700; font-family: var(--mono); }
-    .ascd-reg { color: #2ecc71; font-weight: 700; font-family: var(--mono); }
-    .output-bold { font-weight: 700; color: var(--text); }
+    /* ── NUM CONVERTER ── */
+    .nc-bitview { display:flex; flex-wrap:wrap; gap:3px; font-family:var(--mono); font-size:12px; min-height:34px; align-items:center; }
 
-    /* BQ76952 mono output */
-    .mono-output { background: #0f172a; color: #e5e7eb; padding: 14px; border-radius: var(--radius); font-family: var(--mono); font-size: 13px; white-space: pre-line; margin-top: 12px; min-height: 40px; }
+    /* ── STM32 TIMER ── */
+    .mode-tabs { display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; margin-bottom:16px; background:var(--surface2); border-radius:var(--radius); padding:3px; }
+    .mode-tab { padding:7px 4px; font-size:11px; font-weight:600; cursor:pointer; border:none; background:none; color:var(--text-muted); border-radius:4px; transition:all 0.15s; text-align:center; font-family:var(--sans); }
+    .mode-tab.active { background:var(--green); color:#0d0d0f; }
+    .mode-tab:hover:not(.active) { color:var(--text); background:var(--surface3); }
+    .clock-presets { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+    .preset-btn { font-family:var(--mono); font-size:10px; padding:4px 8px; border:0.5px solid var(--border-strong); background:var(--surface2); color:var(--text-muted); border-radius:4px; cursor:pointer; transition:all 0.12s; }
+    .preset-btn:hover, .preset-btn.active { border-color:var(--green); color:var(--green); background:var(--green-dim); }
+    .calc-btn { width:100%; padding:10px; font-size:13px; font-weight:700; letter-spacing:0.04em; border:none; border-radius:var(--radius); background:var(--green); color:#0d0d0f; cursor:pointer; transition:all 0.15s; margin-top:4px; font-family:var(--sans); }
+    .calc-btn:hover { opacity:0.88; transform:translateY(-1px); }
+    .field-unit-stm { font-family:var(--mono); font-size:11px; color:var(--text-hint); white-space:nowrap; }
+    .field-hint { font-family:var(--mono); font-size:10px; color:var(--text-hint); margin-top:4px; }
+    .reg-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+    .reg-chip { background:var(--surface2); border:0.5px solid var(--border); border-radius:var(--radius); padding:13px 15px; position:relative; }
+    .reg-chip.rg { border-color:var(--green-border); background:var(--green-dim); }
+    .reg-chip.ra { border-color:rgba(255,179,0,0.3); background:var(--amber-dim); }
+    .reg-chip.rp { border-color:rgba(185,127,255,0.3); background:rgba(185,127,255,0.08); }
+    .reg-name { font-family:var(--mono); font-size:9px; color:var(--text-hint); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px; }
+    .reg-val { font-family:var(--mono); font-size:24px; font-weight:700; line-height:1; }
+    .reg-val.g { color:var(--green); } .reg-val.a { color:var(--amber); } .reg-val.p { color:var(--purple); }
+    .reg-desc { font-family:var(--mono); font-size:10px; color:var(--text-muted); margin-top:4px; }
+    .reg-hex { font-family:var(--mono); font-size:10px; color:var(--text-hint); background:var(--surface3); padding:2px 7px; border-radius:3px; display:inline-block; margin-top:4px; }
+    .metrics-row { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:11px; }
+    .met-chip { background:var(--surface2); border:0.5px solid var(--border); border-radius:var(--radius); padding:9px 11px; }
+    .met-label { font-family:var(--mono); font-size:9px; color:var(--text-hint); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:3px; }
+    .met-val { font-family:var(--mono); font-size:13px; font-weight:700; color:var(--blue); }
+    .met-sub { font-family:var(--mono); font-size:9px; color:var(--text-hint); margin-top:1px; }
+    .acc-row { display:flex; align-items:center; gap:10px; margin-bottom:11px; }
+    .acc-label { font-family:var(--mono); font-size:10px; color:var(--text-muted); white-space:nowrap; }
+    .acc-track { flex:1; height:5px; background:var(--surface3); border-radius:3px; overflow:hidden; }
+    .acc-fill { height:100%; border-radius:3px; transition:width 0.4s,background 0.4s; }
+    .acc-pct { font-family:var(--mono); font-size:10px; color:var(--text-muted); white-space:nowrap; }
+    .formula-block { background:var(--surface2); border:0.5px solid var(--border); border-radius:var(--radius); padding:11px 13px; font-family:var(--mono); font-size:11px; color:var(--text-muted); line-height:1.9; white-space:pre; margin-bottom:11px; overflow-x:auto; }
+    .duty-bar { height:36px; border-radius:var(--radius); overflow:hidden; background:var(--surface3); display:flex; }
+    .duty-on  { height:100%; background:var(--green); display:flex; align-items:center; justify-content:center; transition:width 0.3s; }
+    .duty-off { height:100%; flex:1; display:flex; align-items:center; justify-content:center; }
+    .duty-lbl { font-family:var(--mono); font-size:10px; font-weight:700; }
+    .code-block { background:#0a0a0c; border:0.5px solid var(--border); border-radius:var(--radius); padding:13px; font-family:var(--mono); font-size:11.5px; color:var(--text-muted); line-height:1.85; white-space:pre; overflow-x:auto; position:relative; }
+    .code-kw { color:var(--purple); } .code-num { color:var(--amber); } .code-comment { color:var(--text-hint); } .code-fn { color:var(--blue); }
+    .copy-btn { position:absolute; top:9px; right:9px; font-family:var(--mono); font-size:10px; padding:3px 9px; background:var(--surface3); border:0.5px solid var(--border-strong); color:var(--text-muted); border-radius:4px; cursor:pointer; transition:all 0.12s; }
+    .copy-btn:hover { color:var(--green); border-color:var(--green-border); }
+    .err-chip { font-family:var(--mono); font-size:11px; color:var(--red); background:var(--red-dim); border:0.5px solid rgba(255,77,77,0.2); border-radius:var(--radius); padding:7px 11px; display:none; margin-bottom:10px; }
+    .stm-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2.5rem; color:var(--text-hint); text-align:center; gap:9px; }
+    .stm-empty-icon { font-size:28px; opacity:0.22; }
+    .stm-empty-text { font-family:var(--mono); font-size:11px; line-height:1.7; }
+    .pill { display:inline-block; font-family:var(--mono); font-size:11px; color:var(--green); background:var(--green-dim); border:0.5px solid var(--green-border); padding:4px 10px; border-radius:20px; margin-bottom:9px; }
+    .ref-label { font-family:var(--mono); font-size:10px; color:var(--text-hint); margin-bottom:4px; margin-top:9px; }
+    .stm-div { height:0.5px; background:var(--border); margin:9px 0; }
 
-    /* INFO BOX */
-    .info-box { background: var(--blue-light); border-left: 3px solid var(--blue); padding: 10px 12px; border-radius: var(--radius); font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
-
-    /* SCALE TABLE */
-    .scale-table { width: 100%; font-size: 12px; border-collapse: collapse; }
-    .scale-table td { padding: 7px 8px; border-bottom: 0.5px solid var(--border); }
-    .scale-table tr:last-child td { border-bottom: none; }
-
-    /* DIAGRAM */
-    .diagram-wrap { display: flex; justify-content: center; padding: 8px 0 4px; }
-
-    /* FOOTER */
-    footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-hint); border-top: 0.5px solid var(--border); margin-top: 2rem; }
+    /* ── FOOTER ── */
+    footer { position:relative; z-index:1; text-align:center; padding:1.5rem; font-family:var(--mono); font-size:11px; color:var(--text-hint); border-top:0.5px solid var(--border); margin-top:1rem; }
   </style>
 </head>
 <body>
 
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
     <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 2L3 7v6l7 5 7-5V7L10 2z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M10 8v4M8 10h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M10 2L3 7v6l7 5 7-5V7L10 2z" stroke="#0d0d0f" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M10 8v4M8 10h4" stroke="#0d0d0f" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </div>
   <div class="brand-block">
@@ -174,93 +217,69 @@
 
 <div class="container">
 
+  <!-- NAV -->
   <div class="nav">
     <button class="nav-tab active" onclick="switchTab('vdiv',this)">Voltage Divider</button>
-    <button class="nav-tab" onclick="switchTab('edv',this)">EDV Calculator</button>
-    <button class="nav-tab" onclick="switchTab('bq78350',this)">BQ78350 AOLD/ASCD</button>
-    <button class="nav-tab" onclick="switchTab('bq76952',this)">BQ76952 Protection</button>
-    <button class="nav-tab" onclick="switchTab('numconv',this)">Hex / Bin / Dec</button>
+    <button class="nav-tab" onclick="switchTab('edv',this)">EDV</button>
+    <button class="nav-tab" onclick="switchTab('bq78350',this)">BQ78350</button>
+    <button class="nav-tab" onclick="switchTab('bq76952',this)">BQ76952</button>
+    <button class="nav-tab" onclick="switchTab('numconv',this)">Hex/Bin/Dec</button>
+    <button class="nav-tab" onclick="switchTab('stm32',this)">STM32 Timer</button>
   </div>
 
-  <!-- ═══════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
        TAB 1 — VOLTAGE DIVIDER
-  ════════════════════════════════════════════════ -->
+  ═══════════════════════════════════════════ -->
   <div class="tab-panel active" id="tab-vdiv">
     <div class="two-col">
-      <div>
-        <div class="card">
-          <div class="card-label">Solve for</div>
-          <div class="solve-row">
-            <button class="solve-btn active" onclick="setSolve('vout',this)">Vout</button>
-            <button class="solve-btn" onclick="setSolve('r1',this)">R1</button>
-            <button class="solve-btn" onclick="setSolve('r2',this)">R2</button>
-            <button class="solve-btn" onclick="setSolve('vin',this)">Vin</button>
-          </div>
-          <div class="form-group">
-            <label>Input Voltage — Vin</label>
-            <div class="field-row">
-              <input type="number" id="vd-vin" placeholder="e.g. 12" oninput="vdCalc()" />
-              <span class="unit">V</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Resistor R1 (upper / series)</label>
-            <div class="field-row">
-              <input type="number" id="vd-r1" placeholder="e.g. 10000" oninput="vdCalc()" />
-              <span class="unit">Ω</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Resistor R2 (lower / to GND)</label>
-            <div class="field-row">
-              <input type="number" id="vd-r2" placeholder="e.g. 10000" oninput="vdCalc()" />
-              <span class="unit">Ω</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Output Voltage — Vout</label>
-            <div class="field-row">
-              <input type="number" id="vd-vout" placeholder="computed" class="computed" readonly />
-              <span class="unit">V</span>
-            </div>
-          </div>
-          <div id="vd-err" class="error-msg" style="display:none"></div>
-          <div class="formula-row">
-            <span class="formula-label">Formula</span>
-            <span class="formula-tag">Vout = Vin × R2 / (R1 + R2)</span>
-          </div>
+      <div class="card">
+        <div class="card-label">Solve for</div>
+        <div class="solve-row">
+          <button class="solve-btn active" onclick="setSolve('vout',this)">Vout</button>
+          <button class="solve-btn" onclick="setSolve('r1',this)">R1</button>
+          <button class="solve-btn" onclick="setSolve('r2',this)">R2</button>
+          <button class="solve-btn" onclick="setSolve('vin',this)">Vin</button>
         </div>
+        <div class="form-group"><label>Input Voltage — Vin</label>
+          <div class="field-row"><input type="number" id="vd-vin" placeholder="e.g. 12" oninput="vdCalc()"/><span class="unit">V</span></div></div>
+        <div class="form-group"><label>R1 (upper / series)</label>
+          <div class="field-row"><input type="number" id="vd-r1" placeholder="e.g. 10000" oninput="vdCalc()"/><span class="unit">Ω</span></div></div>
+        <div class="form-group"><label>R2 (lower / to GND)</label>
+          <div class="field-row"><input type="number" id="vd-r2" placeholder="e.g. 10000" oninput="vdCalc()"/><span class="unit">Ω</span></div></div>
+        <div class="form-group"><label>Output Voltage — Vout</label>
+          <div class="field-row"><input type="number" id="vd-vout" placeholder="computed" class="computed" readonly/><span class="unit">V</span></div></div>
+        <div id="vd-err" class="error-msg" style="display:none"></div>
+        <div class="formula-row"><span class="formula-label">Formula</span><span class="formula-tag">Vout = Vin × R2 / (R1 + R2)</span></div>
       </div>
-
       <div>
         <div class="card" style="margin-bottom:14px">
           <div class="card-label">Circuit Diagram</div>
           <div class="diagram-wrap">
-            <svg id="vd-diagram" viewBox="0 0 200 280" width="190" height="270" xmlns="http://www.w3.org/2000/svg" style="font-family:'IBM Plex Mono',monospace;">
-              <text id="dd-vin" x="100" y="20" text-anchor="middle" font-size="12" fill="#6b6b67">Vin</text>
-              <line x1="100" y1="26" x2="100" y2="52" stroke="#6b6b67" stroke-width="1.5"/>
-              <rect x="76" y="52" width="48" height="66" rx="4" fill="none" stroke="#1a7a4a" stroke-width="1.5"/>
-              <text x="100" y="80" text-anchor="middle" font-size="11" fill="#1a7a4a" font-weight="500">R1</text>
-              <text id="dd-r1" x="100" y="96" text-anchor="middle" font-size="10" fill="#1a7a4a">—</text>
-              <line x1="100" y1="118" x2="100" y2="145" stroke="#6b6b67" stroke-width="1.5"/>
-              <circle cx="100" cy="145" r="4" fill="#1a7a4a"/>
-              <line x1="100" y1="145" x2="162" y2="145" stroke="#6b6b67" stroke-width="1"/>
-              <text id="dd-vout" x="170" y="149" font-size="11" fill="#6b6b67">Vout</text>
-              <rect x="76" y="149" width="48" height="66" rx="4" fill="none" stroke="#9b9b97" stroke-width="1.5"/>
-              <text x="100" y="177" text-anchor="middle" font-size="11" fill="#9b9b97" font-weight="500">R2</text>
-              <text id="dd-r2" x="100" y="193" text-anchor="middle" font-size="10" fill="#9b9b97">—</text>
-              <line x1="100" y1="215" x2="100" y2="238" stroke="#6b6b67" stroke-width="1.5"/>
-              <line x1="70" y1="238" x2="130" y2="238" stroke="#6b6b67" stroke-width="1.5"/>
-              <line x1="80" y1="246" x2="120" y2="246" stroke="#6b6b67" stroke-width="1.2"/>
-              <line x1="88" y1="254" x2="112" y2="254" stroke="#6b6b67" stroke-width="1"/>
-              <text x="100" y="270" text-anchor="middle" font-size="11" fill="#9b9b97">GND</text>
+            <svg viewBox="0 0 200 280" width="190" height="270" xmlns="http://www.w3.org/2000/svg" style="font-family:'JetBrains Mono',monospace">
+              <text id="dd-vin" x="100" y="20" text-anchor="middle" font-size="11" fill="#888884">Vin</text>
+              <line x1="100" y1="26" x2="100" y2="52" stroke="#888884" stroke-width="1.5"/>
+              <rect x="76" y="52" width="48" height="66" rx="4" fill="none" stroke="#00e87a" stroke-width="1.5"/>
+              <text x="100" y="80" text-anchor="middle" font-size="11" fill="#00e87a" font-weight="500">R1</text>
+              <text id="dd-r1" x="100" y="96" text-anchor="middle" font-size="10" fill="#00e87a">—</text>
+              <line x1="100" y1="118" x2="100" y2="145" stroke="#888884" stroke-width="1.5"/>
+              <circle cx="100" cy="145" r="4" fill="#00e87a"/>
+              <line x1="100" y1="145" x2="162" y2="145" stroke="#888884" stroke-width="1"/>
+              <text id="dd-vout" x="170" y="149" font-size="11" fill="#888884">Vout</text>
+              <rect x="76" y="149" width="48" height="66" rx="4" fill="none" stroke="#4a4a48" stroke-width="1.5"/>
+              <text x="100" y="177" text-anchor="middle" font-size="11" fill="#4a4a48" font-weight="500">R2</text>
+              <text id="dd-r2" x="100" y="193" text-anchor="middle" font-size="10" fill="#4a4a48">—</text>
+              <line x1="100" y1="215" x2="100" y2="238" stroke="#888884" stroke-width="1.5"/>
+              <line x1="70" y1="238" x2="130" y2="238" stroke="#888884" stroke-width="1.5"/>
+              <line x1="80" y1="246" x2="120" y2="246" stroke="#888884" stroke-width="1.2"/>
+              <line x1="88" y1="254" x2="112" y2="254" stroke="#888884" stroke-width="1"/>
+              <text x="100" y="270" text-anchor="middle" font-size="11" fill="#4a4a48">GND</text>
             </svg>
           </div>
         </div>
         <div class="card">
           <div class="card-label">Results</div>
           <div class="result-grid">
-            <div class="result-chip"><div class="rc-label">Output Voltage</div><div class="rc-val highlight" id="vd-res-vout">—</div><div class="rc-sub">volts</div></div>
+            <div class="result-chip"><div class="rc-label">Output Voltage</div><div class="rc-val g" id="vd-res-vout">—</div><div class="rc-sub">volts</div></div>
             <div class="result-chip"><div class="rc-label">Ratio (Vout/Vin)</div><div class="rc-val" id="vd-res-ratio">—</div><div class="rc-sub">dimensionless</div></div>
             <div class="result-chip"><div class="rc-label">Current (I)</div><div class="rc-val" id="vd-res-i">—</div><div class="rc-sub" id="vd-res-i-unit">—</div></div>
             <div class="result-chip"><div class="rc-label">Power (total)</div><div class="rc-val" id="vd-res-p">—</div><div class="rc-sub" id="vd-res-p-unit">—</div></div>
@@ -270,41 +289,21 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
        TAB 2 — EDV CALCULATOR
-  ════════════════════════════════════════════════ -->
+  ═══════════════════════════════════════════ -->
   <div class="tab-panel" id="tab-edv">
     <div class="two-col">
       <div class="card">
-        <div class="card-title">Battery Parameters</div>
-        <div class="info-box">Enter your battery's voltage range and desired SOC thresholds.</div>
-        <div class="form-group">
-          <label>Maximum Voltage <span style="font-size:11px;color:var(--text-hint)">(mV)</span></label>
-          <input type="number" id="edv-maxV" value="4200" step="10" oninput="edvCalc()" />
-          <div class="hint">Full charge voltage (e.g. 4200 mV for Li-Ion)</div>
+        <div class="card-label">Battery Parameters</div>
+        <div class="info-box">Enter battery voltage range and SOC thresholds.</div>
+        <div class="form-group"><label>Maximum Voltage (mV)</label><input type="number" id="edv-maxV" value="4200" step="10" oninput="edvCalc()"/><div class="hint">Full charge voltage</div></div>
+        <div class="form-group"><label>Minimum Voltage (mV)</label><input type="number" id="edv-minV" value="2800" step="10" oninput="edvCalc()"/><div class="hint">Absolute minimum safe</div></div>
+        <div class="two-col" style="gap:8px">
+          <div class="form-group"><label>Battery Low SOC (%)</label><input type="number" id="edv-soc2" value="8" step="0.5" oninput="edvCalc()"/><div class="hint">EDV2</div></div>
+          <div class="form-group"><label>Warning SOC (%)</label><input type="number" id="edv-soc1" value="3" step="0.5" oninput="edvCalc()"/><div class="hint">EDV1</div></div>
         </div>
-        <div class="form-group">
-          <label>Minimum Voltage <span style="font-size:11px;color:var(--text-hint)">(mV)</span></label>
-          <input type="number" id="edv-minV" value="2800" step="10" oninput="edvCalc()" />
-          <div class="hint">Absolute minimum safe voltage</div>
-        </div>
-        <div class="two-col" style="gap:10px">
-          <div class="form-group">
-            <label>Battery Low SOC <span style="font-size:11px;color:var(--text-hint)">(%)</span></label>
-            <input type="number" id="edv-soc2" value="8" min="1" max="20" step="0.5" oninput="edvCalc()" />
-            <div class="hint">EDV2 threshold</div>
-          </div>
-          <div class="form-group">
-            <label>Warning SOC <span style="font-size:11px;color:var(--text-hint)">(%)</span></label>
-            <input type="number" id="edv-soc1" value="3" min="0.5" max="10" step="0.5" oninput="edvCalc()" />
-            <div class="hint">EDV1 threshold</div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Cutoff SOC <span style="font-size:11px;color:var(--text-hint)">(%)</span></label>
-          <input type="number" id="edv-soc0" value="0" step="0.5" oninput="edvCalc()" />
-          <div class="hint">EDV0 threshold % (usually 0%)</div>
-        </div>
+        <div class="form-group"><label>Cutoff SOC (%)</label><input type="number" id="edv-soc0" value="0" step="0.5" oninput="edvCalc()"/><div class="hint">EDV0 (usually 0%)</div></div>
         <button class="btn btn-primary" style="width:100%" onclick="edvCalc()">Calculate EDV</button>
         <div class="btn-group">
           <button class="btn btn-secondary" onclick="edvPreset(4200,2800,8,3,0)">Li-Ion</button>
@@ -313,31 +312,29 @@
           <button class="btn btn-secondary" onclick="edvPreset(1500,1000,10,5,0)">NiCd</button>
         </div>
       </div>
-
       <div>
         <div class="card">
-          <div class="card-title">EDV Thresholds</div>
+          <div class="card-label">EDV Thresholds</div>
           <div id="edv-results" style="display:none">
             <div class="result-box"><div class="result-label">EDV2 — Battery Low</div><div class="result-value" id="edv-v2">--</div><div class="result-unit">@ <span id="edv-s2">--</span>% SOC</div></div>
-            <div class="result-box" style="border-left-color:#ffc107"><div class="result-label">EDV1 — Warning</div><div class="result-value" id="edv-v1" style="color:#d4860b">--</div><div class="result-unit">@ <span id="edv-s1">--</span>% SOC</div></div>
-            <div class="result-box" style="border-left-color:#e74c3c"><div class="result-label">EDV0 — Cutoff</div><div class="result-value" id="edv-v0" style="color:#e74c3c">--</div><div class="result-unit">@ <span id="edv-s0">--</span>% SOC</div></div>
+            <div class="result-box" style="border-left-color:#ffc107"><div class="result-label">EDV1 — Warning</div><div class="result-value" id="edv-v1" style="color:#ffb300">--</div><div class="result-unit">@ <span id="edv-s1">--</span>% SOC</div></div>
+            <div class="result-box" style="border-left-color:#e74c3c"><div class="result-label">EDV0 — Cutoff</div><div class="result-value" id="edv-v0" style="color:#ff4d4d">--</div><div class="result-unit">@ <span id="edv-s0">--</span>% SOC</div></div>
           </div>
-          <div id="edv-noResults" style="text-align:center;color:var(--text-hint);padding:24px;font-size:13px">Results will appear here</div>
+          <div id="edv-noResults" style="text-align:center;color:var(--text-hint);padding:20px;font-size:12px;font-family:var(--mono)">Results will appear here</div>
         </div>
-
         <div class="card">
-          <div class="card-title">Voltage Scale Visualization</div>
-          <div style="display:grid;grid-template-columns:1fr 60px;gap:14px;align-items:flex-start">
+          <div class="card-label">Voltage Scale</div>
+          <div style="display:grid;grid-template-columns:1fr 60px;gap:12px;align-items:flex-start">
             <table class="scale-table">
               <tr><td style="font-weight:600">State</td><td style="font-weight:600;text-align:right">Voltage</td><td style="font-weight:600;text-align:center">SOC</td></tr>
-              <tr><td>Full Charge</td><td style="text-align:right;font-family:var(--mono)" id="t-maxV">--</td><td style="text-align:center">100%</td></tr>
-              <tr style="background:rgba(255,193,7,0.08)"><td>Battery Low (EDV2)</td><td style="text-align:right;font-family:var(--mono)" id="t-v2">--</td><td style="text-align:center" id="t-s2">--</td></tr>
-              <tr style="background:rgba(255,152,0,0.08)"><td>Warning (EDV1)</td><td style="text-align:right;font-family:var(--mono)" id="t-v1">--</td><td style="text-align:center" id="t-s1">--</td></tr>
-              <tr style="background:rgba(231,76,60,0.08)"><td>Cutoff (EDV0)</td><td style="text-align:right;font-family:var(--mono)" id="t-v0">--</td><td style="text-align:center" id="t-s0">--</td></tr>
-              <tr><td>Minimum Safe</td><td style="text-align:right;font-family:var(--mono)" id="t-minV">--</td><td style="text-align:center">0%</td></tr>
+              <tr><td>Full Charge</td><td style="text-align:right" id="t-maxV">--</td><td style="text-align:center">100%</td></tr>
+              <tr><td>Battery Low (EDV2)</td><td style="text-align:right" id="t-v2">--</td><td style="text-align:center" id="t-s2">--</td></tr>
+              <tr><td>Warning (EDV1)</td><td style="text-align:right" id="t-v1">--</td><td style="text-align:center" id="t-s1">--</td></tr>
+              <tr><td>Cutoff (EDV0)</td><td style="text-align:right" id="t-v0">--</td><td style="text-align:center" id="t-s0">--</td></tr>
+              <tr><td>Minimum Safe</td><td style="text-align:right" id="t-minV">--</td><td style="text-align:center">0%</td></tr>
             </table>
             <div class="voltage-scale">
-              <div class="scale-bar" id="edv-scaleBar">
+              <div class="scale-bar">
                 <div class="threshold-marker" id="edv-m2"><div class="threshold-label">EDV2<br><span class="threshold-voltage" id="edv-ml2">--</span></div></div>
                 <div class="threshold-marker" id="edv-m1"><div class="threshold-label">EDV1<br><span class="threshold-voltage" id="edv-ml1">--</span></div></div>
                 <div class="threshold-marker" id="edv-m0"><div class="threshold-label">EDV0<br><span class="threshold-voltage" id="edv-ml0">--</span></div></div>
@@ -349,186 +346,240 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
        TAB 3 — BQ78350 AOLD/ASCD
-  ════════════════════════════════════════════════ -->
+  ═══════════════════════════════════════════ -->
   <div class="tab-panel" id="tab-bq78350">
     <div class="card">
       <div class="card-title">BQ78350-R1 AOLD / ASCD Threshold Calculator</div>
       <p class="subtitle-text">Compute hardware protection currents and PROTECT register bytes from Rsense, RSNS, and selected thresholds.</p>
-
       <div class="bq-section">Inputs</div>
-      <div class="form-row">
-        <label>Sense resistor Rsense (mΩ)</label>
-        <input id="bq78-rsense" type="number" step="0.01" value="2" style="max-width:200px">
-      </div>
-      <div class="form-row">
-        <label>RSNS</label>
-        <select id="bq78-rsns" style="max-width:200px">
-          <option value="1">RSNS = 1</option>
-          <option value="0">RSNS = 0</option>
-        </select>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-blue" onclick="bq78Calc()">Calculate OCD / ASCD currents</button>
-      </div>
-
+      <div class="bq-form-row"><label>Sense resistor Rsense (mΩ)</label><input id="bq78-rsense" type="number" step="0.01" value="2" style="max-width:200px"></div>
+      <div class="bq-form-row"><label>RSNS</label><select id="bq78-rsns" style="max-width:200px"><option value="1">RSNS = 1</option><option value="0">RSNS = 0</option></select></div>
+      <div class="btn-row"><button class="btn btn-blue" onclick="bq78Calc()">Calculate OCD / ASCD currents</button></div>
       <div class="bq-section">AOLD – Overcurrent in Discharge</div>
-      <div class="form-row"><label>AOLD threshold</label><select id="bq78-ocd-thr" style="max-width:320px"></select></div>
-      <div class="form-row">
-        <label>AOLD delay</label>
-        <select id="bq78-ocd-delay" style="max-width:200px">
-          <option value="0">8 ms</option><option value="1">20 ms</option>
-          <option value="2">40 ms</option><option value="3">80 ms</option>
-          <option value="4">160 ms</option><option value="5">320 ms</option>
-          <option value="6">640 ms</option><option value="7">1280 ms</option>
-        </select>
-      </div>
-
+      <div class="bq-form-row"><label>AOLD threshold</label><select id="bq78-ocd-thr" style="max-width:340px"></select></div>
+      <div class="bq-form-row"><label>AOLD delay</label><select id="bq78-ocd-delay" style="max-width:200px">
+        <option value="0">8 ms</option><option value="1">20 ms</option><option value="2">40 ms</option><option value="3">80 ms</option>
+        <option value="4">160 ms</option><option value="5">320 ms</option><option value="6">640 ms</option><option value="7">1280 ms</option>
+      </select></div>
       <div class="bq-section">ASCD – Short Circuit in Discharge</div>
-      <div class="form-row"><label>ASCD threshold</label><select id="bq78-ascd-thr" style="max-width:320px"></select></div>
-      <div class="form-row">
-        <label>ASCD delay</label>
-        <select id="bq78-ascd-delay" style="max-width:200px">
-          <option value="0">70 µs</option><option value="1">100 µs</option>
-          <option value="2">200 µs</option><option value="3">400 µs</option>
-        </select>
-      </div>
-
+      <div class="bq-form-row"><label>ASCD threshold</label><select id="bq78-ascd-thr" style="max-width:340px"></select></div>
+      <div class="bq-form-row"><label>ASCD delay</label><select id="bq78-ascd-delay" style="max-width:200px">
+        <option value="0">70 µs</option><option value="1">100 µs</option><option value="2">200 µs</option><option value="3">400 µs</option>
+      </select></div>
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="bq78Summary()">Show selection summary</button>
+        <button class="btn btn-secondary" onclick="bq78Summary()">Show summary</button>
         <button class="btn btn-secondary" onclick="bq78Hex()">Show hex</button>
       </div>
       <div id="bq78-out" class="bq-output" style="display:none"></div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
        TAB 4 — BQ76952 PROTECTION
-  ════════════════════════════════════════════════ -->
+  ═══════════════════════════════════════════ -->
   <div class="tab-panel" id="tab-bq76952">
     <div class="card">
       <div class="card-title">BQ76952 Hardware Protection Calculator</div>
-      <p class="subtitle-text">Professional SCD / OCC / OCD Threshold & Delay Calculator. Enter Rsense then click Calculate.</p>
-
+      <p class="subtitle-text">SCD / OCC / OCD1 / OCD2 Threshold & Delay Calculator. Enter Rsense then Calculate.</p>
       <div class="bq-section">Input Parameters</div>
-      <div class="form-row">
-        <label>Rsense (mΩ)</label>
-        <input type="number" id="bq76-rsense" step="0.001" placeholder="e.g. 1.0" style="max-width:200px">
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-blue" onclick="bq76Calc()">Calculate</button>
-      </div>
-
+      <div class="bq-form-row"><label>Rsense (mΩ)</label><input type="number" id="bq76-rsense" step="0.001" placeholder="e.g. 1.0" style="max-width:200px"></div>
+      <div class="btn-row"><button class="btn btn-blue" onclick="bq76Calc()">Calculate</button></div>
       <div class="two-col">
         <div>
           <div class="bq-section">Short Circuit in Discharge (SCD)</div>
           <div class="form-group"><label>SCD Threshold</label><select id="bq76-scd"></select></div>
           <div class="form-group"><label>SCD Delay</label><select id="bq76-scdDelay"></select></div>
-
           <div class="bq-section">Overcurrent in Charge (OCC)</div>
           <div class="form-group"><label>OCC Threshold</label><select id="bq76-occ"></select></div>
           <div class="form-group"><label>OCC Delay</label><select id="bq76-occDelay"></select></div>
         </div>
         <div>
-          <div class="bq-section">Overcurrent in Discharge 1 (OCD1)</div>
+          <div class="bq-section">OCD1</div>
           <div class="form-group"><label>OCD1 Threshold</label><select id="bq76-ocd1"></select></div>
           <div class="form-group"><label>OCD1 Delay</label><select id="bq76-ocd1Delay"></select></div>
-
-          <div class="bq-section">Overcurrent in Discharge 2 (OCD2)</div>
+          <div class="bq-section">OCD2</div>
           <div class="form-group"><label>OCD2 Threshold</label><select id="bq76-ocd2"></select></div>
           <div class="form-group"><label>OCD2 Delay</label><select id="bq76-ocd2Delay"></select></div>
         </div>
       </div>
-
       <div class="bq-section">BQStudio Codes</div>
-      <div class="btn-row">
-        <button class="btn btn-secondary" onclick="bq76Show()">Show Values</button>
-      </div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="bq76Show()">Show Values</button></div>
       <div id="bq76-output" class="mono-output" style="display:none"></div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════
-       TAB 5 — HEX / BIN / DEC CONVERTER
-  ════════════════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════
+       TAB 5 — HEX / BIN / DEC
+  ═══════════════════════════════════════════ -->
   <div class="tab-panel" id="tab-numconv">
     <div class="card" style="max-width:640px;margin:0 auto">
-      <div class="card-title">Number Base Converter</div>
-      <p class="subtitle-text">Type in any field — all others update instantly. Supports 8-bit, 16-bit, and 32-bit views.</p>
-
-      <!-- Bit width selector -->
-      <div style="display:flex;gap:6px;margin-bottom:20px">
+      <div class="card-label">Number Base Converter</div>
+      <div style="display:flex;gap:6px;margin-bottom:18px">
         <button class="solve-btn active" id="nc-bits-8"  onclick="ncSetBits(8,this)">8-bit</button>
-        <button class="solve-btn"        id="nc-bits-16" onclick="ncSetBits(16,this)">16-bit</button>
-        <button class="solve-btn"        id="nc-bits-32" onclick="ncSetBits(32,this)">32-bit</button>
-        <button class="solve-btn"        id="nc-bits-0"  onclick="ncSetBits(0,this)">Unlimited</button>
+        <button class="solve-btn" id="nc-bits-16" onclick="ncSetBits(16,this)">16-bit</button>
+        <button class="solve-btn" id="nc-bits-32" onclick="ncSetBits(32,this)">32-bit</button>
+        <button class="solve-btn" id="nc-bits-0"  onclick="ncSetBits(0,this)">Unlimited</button>
       </div>
-
-      <!-- Input fields -->
-      <div class="form-group">
-        <label>Hexadecimal <span style="font-size:11px;color:var(--text-hint)">— prefix 0x optional</span></label>
-        <div class="field-row">
-          <input type="text" id="nc-hex" placeholder="e.g. 1A3F or 0x1A3F" oninput="ncFromHex()" style="font-family:var(--mono);letter-spacing:0.05em" />
-          <span class="unit" style="min-width:28px;font-size:11px">HEX</span>
-        </div>
+      <div class="form-group"><label>Hexadecimal <span style="font-size:10px;color:var(--text-hint)">— 0x prefix optional</span></label>
+        <div class="field-row"><input type="text" id="nc-hex" placeholder="e.g. 1A3F" oninput="ncFromHex()"/><span class="unit">HEX</span></div></div>
+      <div class="form-group"><label>Decimal</label>
+        <div class="field-row"><input type="text" id="nc-dec" placeholder="e.g. 6719" oninput="ncFromDec()"/><span class="unit">DEC</span></div></div>
+      <div class="form-group"><label>Binary <span style="font-size:10px;color:var(--text-hint)">— spaces allowed</span></label>
+        <div class="field-row"><input type="text" id="nc-bin" placeholder="e.g. 0001 1010 0011 1111" oninput="ncFromBin()"/><span class="unit">BIN</span></div></div>
+      <div class="form-group"><label>Octal</label>
+        <div class="field-row"><input type="text" id="nc-oct" placeholder="e.g. 15077" oninput="ncFromOct()"/><span class="unit">OCT</span></div></div>
+      <div id="nc-err" class="error-msg" style="display:none;margin-bottom:9px"></div>
+      <div style="margin-bottom:4px"><div class="card-label">Bit View</div>
+        <div id="nc-bitview" class="nc-bitview"><span style="color:var(--text-hint);font-size:11px;font-family:var(--mono)">Enter a value above</span></div>
       </div>
-
-      <div class="form-group">
-        <label>Decimal <span style="font-size:11px;color:var(--text-hint)">— unsigned integer</span></label>
-        <div class="field-row">
-          <input type="text" id="nc-dec" placeholder="e.g. 6719" oninput="ncFromDec()" style="font-family:var(--mono)" />
-          <span class="unit" style="min-width:28px;font-size:11px">DEC</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Binary <span style="font-size:11px;color:var(--text-hint)">— spaces allowed</span></label>
-        <div class="field-row">
-          <input type="text" id="nc-bin" placeholder="e.g. 0001 1010 0011 1111" oninput="ncFromBin()" style="font-family:var(--mono);letter-spacing:0.04em" />
-          <span class="unit" style="min-width:28px;font-size:11px">BIN</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Octal</label>
-        <div class="field-row">
-          <input type="text" id="nc-oct" placeholder="e.g. 15077" oninput="ncFromOct()" style="font-family:var(--mono)" />
-          <span class="unit" style="min-width:28px;font-size:11px">OCT</span>
-        </div>
-      </div>
-
-      <div id="nc-err" class="error-msg" style="display:none;margin-bottom:10px"></div>
-
-      <!-- Bit viewer -->
-      <div style="margin-top:8px;margin-bottom:4px">
-        <div class="card-label">Bit View</div>
-        <div id="nc-bitview" style="display:flex;flex-wrap:wrap;gap:3px;font-family:var(--mono);font-size:13px;min-height:36px;align-items:center">
-          <span style="color:var(--text-hint);font-size:12px">Enter a value above to see bit layout</span>
-        </div>
-      </div>
-
-      <!-- Info row -->
-      <div id="nc-info" style="display:none;margin-top:14px;padding-top:12px;border-top:0.5px solid var(--border)">
+      <div id="nc-info" style="display:none;margin-top:12px;padding-top:11px;border-top:0.5px solid var(--border)">
         <div class="result-grid" style="grid-template-columns:1fr 1fr 1fr">
-          <div class="result-chip"><div class="rc-label">Bit Width</div><div class="rc-val" id="nc-r-bits">—</div><div class="rc-sub">bits used</div></div>
-          <div class="result-chip"><div class="rc-label">Byte Count</div><div class="rc-val" id="nc-r-bytes">—</div><div class="rc-sub">bytes</div></div>
-          <div class="result-chip"><div class="rc-label">Signed (2's comp)</div><div class="rc-val" id="nc-r-signed">—</div><div class="rc-sub">if MSB=1</div></div>
+          <div class="result-chip"><div class="rc-label">Bits Used</div><div class="rc-val" id="nc-r-bits">—</div><div class="rc-sub">bits</div></div>
+          <div class="result-chip"><div class="rc-label">Bytes</div><div class="rc-val" id="nc-r-bytes">—</div><div class="rc-sub">bytes</div></div>
+          <div class="result-chip"><div class="rc-label">Signed 2's comp</div><div class="rc-val" id="nc-r-signed">—</div><div class="rc-sub">if MSB=1</div></div>
         </div>
       </div>
+      <div style="margin-top:13px;padding-top:11px;border-top:0.5px solid var(--border)">
+        <div class="card-label" style="margin-bottom:7px">Quick Values</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">
+          <button class="btn btn-secondary" style="font-size:10px;padding:4px 9px;font-family:var(--mono)" onclick="ncSetHex('FF')">0xFF</button>
+          <button class="btn btn-secondary" style="font-size:10px;padding:4px 9px;font-family:var(--mono)" onclick="ncSetHex('FFFF')">0xFFFF</button>
+          <button class="btn btn-secondary" style="font-size:10px;padding:4px 9px;font-family:var(--mono)" onclick="ncSetHex('00')">0x00</button>
+          <button class="btn btn-secondary" style="font-size:10px;padding:4px 9px;font-family:var(--mono)" onclick="ncSetHex('7F')">0x7F</button>
+          <button class="btn btn-secondary" style="font-size:10px;padding:4px 9px;font-family:var(--mono)" onclick="ncSetHex('80')">0x80</button>
+          <button class="btn btn-secondary" style="font-size:10px;padding:4px 9px;font-family:var(--mono)" onclick="ncSetHex('A5')">0xA5</button>
+          <button class="btn btn-secondary" style="font-size:10px;padding:4px 9px;font-family:var(--mono)" onclick="ncSetHex('5A')">0x5A</button>
+          <button class="btn btn-secondary" style="font-size:10px;padding:4px 9px;font-family:var(--mono)" onclick="ncClear()">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <!-- Quick presets -->
-      <div style="margin-top:14px;padding-top:12px;border-top:0.5px solid var(--border)">
-        <div class="card-label" style="margin-bottom:8px">Quick Values</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px">
-          <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;font-family:var(--mono)" onclick="ncSetHex('FF')">0xFF</button>
-          <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;font-family:var(--mono)" onclick="ncSetHex('FFFF')">0xFFFF</button>
-          <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;font-family:var(--mono)" onclick="ncSetHex('00')">0x00</button>
-          <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;font-family:var(--mono)" onclick="ncSetHex('7F')">0x7F</button>
-          <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;font-family:var(--mono)" onclick="ncSetHex('80')">0x80</button>
-          <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;font-family:var(--mono)" onclick="ncSetHex('A5')">0xA5</button>
-          <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;font-family:var(--mono)" onclick="ncSetHex('5A')">0x5A</button>
-          <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;font-family:var(--mono)" onclick="ncClear()">Clear</button>
+  <!-- ══════════════════════════════════════════
+       TAB 6 — STM32 TIMER
+  ═══════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-stm32">
+    <div class="stm-grid">
+      <!-- LEFT -->
+      <div>
+        <div class="card">
+          <div class="card-label">Mode</div>
+          <div class="mode-tabs">
+            <button class="mode-tab active" onclick="stmSetMode('overflow',this)">Overflow</button>
+            <button class="mode-tab" onclick="stmSetMode('pwm',this)">PWM</button>
+            <button class="mode-tab" onclick="stmSetMode('capture',this)">Capture</button>
+          </div>
+          <div class="form-group">
+            <label>Timer Clock (TIMxCLK)</label>
+            <div class="field-row"><input type="number" id="stm-clk" value="72" oninput="stmSyncClk()"/><span class="field-unit-stm">MHz</span></div>
+            <div class="clock-presets">
+              <button class="preset-btn" onclick="stmSetClk(8)">8</button>
+              <button class="preset-btn" onclick="stmSetClk(16)">16</button>
+              <button class="preset-btn" onclick="stmSetClk(48)">48</button>
+              <button class="preset-btn active" onclick="stmSetClk(72)">72</button>
+              <button class="preset-btn" onclick="stmSetClk(84)">84</button>
+              <button class="preset-btn" onclick="stmSetClk(168)">168</button>
+              <button class="preset-btn" onclick="stmSetClk(180)">180</button>
+              <button class="preset-btn" onclick="stmSetClk(216)">216</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Timer Resolution</label>
+            <select id="stm-bits" onchange="stmCalc()">
+              <option value="65535">16-bit (max 65535)</option>
+              <option value="4294967295">32-bit (max 4,294,967,295)</option>
+            </select>
+          </div>
+          <!-- OVERFLOW -->
+          <div id="stm-in-overflow">
+            <div class="form-group">
+              <label>Desired Update / Interrupt Rate</label>
+              <div class="field-row"><input type="number" id="stm-ov-freq" value="1000" oninput="stmOvHzToSec();stmCalc()"/><span class="field-unit-stm">Hz</span></div>
+              <div class="field-row" style="margin-top:5px"><input type="number" id="stm-ov-sec" placeholder="period in seconds" oninput="stmOvSecToHz();stmCalc()" style="font-size:12px;color:var(--text-muted)"/><span class="field-unit-stm">s</span></div>
+              <div class="field-hint">Enter Hz or period — both stay in sync</div>
+            </div>
+          </div>
+          <!-- PWM -->
+          <div id="stm-in-pwm" style="display:none">
+            <div class="form-group">
+              <label>Desired PWM Frequency</label>
+              <div class="field-row"><input type="number" id="stm-pwm-freq" value="20000" oninput="stmPwmHzToSec();stmCalc()"/><span class="field-unit-stm">Hz</span></div>
+              <div class="field-row" style="margin-top:5px"><input type="number" id="stm-pwm-sec" placeholder="period in seconds" oninput="stmPwmSecToHz();stmCalc()" style="font-size:12px;color:var(--text-muted)"/><span class="field-unit-stm">s</span></div>
+              <div class="field-hint">Enter Hz or period — both stay in sync</div>
+            </div>
+            <div class="form-group"><label>Duty Cycle</label>
+              <div class="field-row"><input type="number" id="stm-pwm-duty" value="50" min="0" max="100" oninput="stmCalc()"/><span class="field-unit-stm">%</span></div></div>
+            <div class="form-group"><label>Counter Resolution (steps)</label>
+              <input type="number" id="stm-pwm-res" value="1000" oninput="stmCalc()"/>
+              <div class="field-hint">Higher = finer duty steps</div></div>
+          </div>
+          <!-- CAPTURE -->
+          <div id="stm-in-capture" style="display:none">
+            <div class="form-group">
+              <label>Signal Frequency to Measure</label>
+              <div class="field-row"><input type="number" id="stm-cap-freq" value="500" oninput="stmCapHzToSec();stmCalc()"/><span class="field-unit-stm">Hz</span></div>
+              <div class="field-row" style="margin-top:5px"><input type="number" id="stm-cap-sec" placeholder="period in seconds" oninput="stmCapSecToHz();stmCalc()" style="font-size:12px;color:var(--text-muted)"/><span class="field-unit-stm">s</span></div>
+              <div class="field-hint">Enter Hz or period — both stay in sync</div>
+            </div>
+            <div class="form-group"><label>Min Counts per Period</label>
+              <input type="number" id="stm-cap-counts" value="1000" oninput="stmCalc()"/>
+              <div class="field-hint">More counts = better resolution</div></div>
+          </div>
+          <button class="calc-btn" onclick="stmCalc()">▶ Calculate</button>
+        </div>
+        <div class="card">
+          <div class="card-label">Reference Formulas</div>
+          <div class="ref-label">Overflow / Update Rate</div><div class="pill">f = TIMxCLK / [(PSC+1) × (Counter+1)]</div>
+          <div class="ref-label">PWM Frequency</div><div class="pill">f_pwm = TIMxCLK / [(PSC+1) × (Counter+1)]</div>
+          <div class="ref-label">Duty Cycle</div><div class="pill">Duty% = CCR / (Counter+1) × 100</div>
+          <div class="ref-label">Input Capture</div><div class="pill">PSC = TIMxCLK / (f_sig × min_counts) − 1</div>
+        </div>
+      </div>
+      <!-- RIGHT -->
+      <div>
+        <div class="card">
+          <div class="card-label">Register Values</div>
+          <div id="stm-empty" class="stm-empty">
+            <div class="stm-empty-icon">⏱</div>
+            <div class="stm-empty-text">Set parameters and click Calculate<br>PSC and Counter values will appear here</div>
+          </div>
+          <div id="stm-results" style="display:none">
+            <div id="stm-err-chip" class="err-chip"></div>
+            <div class="reg-row">
+              <div class="reg-chip rg"><div class="reg-name">PSC — Prescaler</div><div class="reg-val g" id="stm-r-psc">—</div><div class="reg-desc">Write to TIMx_PSC</div><div class="reg-hex" id="stm-r-psc-hex">0x0000</div></div>
+              <div class="reg-chip ra"><div class="reg-name">Counter (ARR)</div><div class="reg-val a" id="stm-r-arr">—</div><div class="reg-desc" id="stm-r-arr-desc">Write to TIMx_ARR</div><div class="reg-hex" id="stm-r-arr-hex">0x0000</div></div>
+            </div>
+            <div class="reg-row" id="stm-ccr-row" style="display:none">
+              <div class="reg-chip rp" style="grid-column:1/-1"><div class="reg-name">CCR — Capture Compare (Duty)</div><div class="reg-val p" id="stm-r-ccr">—</div><div class="reg-desc">Write to TIMx_CCRx</div><div class="reg-hex" id="stm-r-ccr-hex">0x0000</div></div>
+            </div>
+            <div class="stm-div"></div>
+            <div class="metrics-row">
+              <div class="met-chip"><div class="met-label">Achieved Freq</div><div class="met-val" id="stm-m-freq">—</div><div class="met-sub" id="stm-m-freq-u"></div></div>
+              <div class="met-chip"><div class="met-label">Period</div><div class="met-val" id="stm-m-period">—</div><div class="met-sub" id="stm-m-period-u"></div></div>
+              <div class="met-chip" id="stm-m-duty-chip" style="display:none"><div class="met-label">Actual Duty</div><div class="met-val" id="stm-m-duty" style="color:var(--green)">—</div><div class="met-sub">%</div></div>
+              <div class="met-chip"><div class="met-label">Freq Error</div><div class="met-val" id="stm-m-err" style="color:var(--amber)">—</div><div class="met-sub">%</div></div>
+            </div>
+            <div class="acc-row">
+              <span class="acc-label">Accuracy</span>
+              <div class="acc-track"><div class="acc-fill" id="stm-acc-fill" style="width:0%"></div></div>
+              <span class="acc-pct" id="stm-acc-pct">—</span>
+            </div>
+            <div class="formula-block" id="stm-formula-block"></div>
+            <div id="stm-duty-wrap" style="display:none;margin-bottom:11px">
+              <div class="card-label" style="margin-bottom:5px">PWM Duty Preview</div>
+              <div class="duty-bar">
+                <div class="duty-on" id="stm-duty-on" style="width:50%"><span class="duty-lbl" style="color:#0d0d0f" id="stm-duty-on-lbl">50%</span></div>
+                <div class="duty-off"><span class="duty-lbl" style="color:var(--text-hint)">OFF</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" id="stm-code-card" style="display:none">
+          <div class="card-label">HAL Code Snippet</div>
+          <div class="code-block" id="stm-code-out"></div>
+          <button class="copy-btn" onclick="stmCopyCode()">Copy</button>
         </div>
       </div>
     </div>
@@ -536,191 +587,134 @@
 
 </div>
 
-<footer>
-  Revogreen Technologies Pvt Ltd &nbsp;·&nbsp; Internal Engineering Tool &nbsp;·&nbsp; Not for external distribution
-</footer>
+<footer>Revogreen Technologies Pvt Ltd &nbsp;·&nbsp; Internal Engineering Tool &nbsp;·&nbsp; Not for external distribution</footer>
 
 <script>
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 // TAB SWITCHER
-// ═══════════════════════════════════════════
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
+// ══════════════════════════════════════
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
 }
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 // VOLTAGE DIVIDER
-// ═══════════════════════════════════════════
-let vdSolveFor = 'vout';
-function setSolve(target, btn) {
-  vdSolveFor = target;
-  document.querySelectorAll('.solve-btn').forEach(b => b.classList.remove('active'));
+// ══════════════════════════════════════
+let vdSolveFor='vout';
+function setSolve(target,btn){
+  vdSolveFor=target;
+  document.querySelectorAll('.solve-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  ['vin','r1','r2','vout'].forEach(f => {
-    const el = document.getElementById('vd-' + f);
-    if (f === target) { el.classList.add('computed'); el.readOnly = true; el.value = ''; el.placeholder = 'computed'; }
-    else { el.classList.remove('computed'); el.readOnly = false; el.placeholder = {vin:'e.g. 12',r1:'e.g. 10000',r2:'e.g. 10000',vout:'e.g. 5'}[f]; }
+  ['vin','r1','r2','vout'].forEach(f=>{
+    const el=document.getElementById('vd-'+f);
+    if(f===target){el.classList.add('computed');el.readOnly=true;el.value='';el.placeholder='computed';}
+    else{el.classList.remove('computed');el.readOnly=false;el.placeholder={vin:'e.g. 12',r1:'e.g. 10000',r2:'e.g. 10000',vout:'e.g. 5'}[f];}
   });
   vdCalc();
 }
-function fmtR(v) {
-  if (v >= 1e6) return (v/1e6).toFixed(3)+' MΩ';
-  if (v >= 1e3) return (v/1e3).toFixed(3)+' kΩ';
-  return v.toFixed(1)+' Ω';
-}
-function vdReset() { ['vd-res-vout','vd-res-ratio','vd-res-i','vd-res-p'].forEach(id => document.getElementById(id).textContent='—'); document.getElementById('vd-res-i-unit').textContent='—'; document.getElementById('vd-res-p-unit').textContent='—'; }
-function vdErr(msg) { vdReset(); const e=document.getElementById('vd-err'); e.textContent=msg; e.style.display='block'; }
-function vdCalc() {
+function fmtR(v){if(v>=1e6)return(v/1e6).toFixed(3)+' MΩ';if(v>=1e3)return(v/1e3).toFixed(3)+' kΩ';return v.toFixed(1)+' Ω';}
+function vdReset(){['vd-res-vout','vd-res-ratio','vd-res-i','vd-res-p'].forEach(id=>document.getElementById(id).textContent='—');document.getElementById('vd-res-i-unit').textContent='—';document.getElementById('vd-res-p-unit').textContent='—';}
+function vdErr(msg){vdReset();const e=document.getElementById('vd-err');e.textContent=msg;e.style.display='block';}
+function vdCalc(){
   document.getElementById('vd-err').style.display='none';
-  const vin=parseFloat(document.getElementById('vd-vin').value);
-  const r1=parseFloat(document.getElementById('vd-r1').value);
-  const r2=parseFloat(document.getElementById('vd-r2').value);
-  const vout=parseFloat(document.getElementById('vd-vout').value);
+  const vin=parseFloat(document.getElementById('vd-vin').value),r1=parseFloat(document.getElementById('vd-r1').value),r2=parseFloat(document.getElementById('vd-r2').value),vout=parseFloat(document.getElementById('vd-vout').value);
   let cV=vin,cR1=r1,cR2=r2,cVo=vout;
-  try {
+  try{
     if(vdSolveFor==='vout'){if(isNaN(vin)||isNaN(r1)||isNaN(r2))return vdReset();if(r1+r2===0)return vdErr('R1+R2 cannot be zero');cVo=vin*r2/(r1+r2);document.getElementById('vd-vout').value=parseFloat(cVo.toFixed(4));}
     else if(vdSolveFor==='vin'){if(isNaN(vout)||isNaN(r1)||isNaN(r2))return vdReset();if(r2===0)return vdErr('R2 cannot be zero');cV=vout*(r1+r2)/r2;document.getElementById('vd-vin').value=parseFloat(cV.toFixed(4));}
     else if(vdSolveFor==='r1'){if(isNaN(vin)||isNaN(r2)||isNaN(vout))return vdReset();if(vout<=0)return vdErr('Vout must be > 0');cR1=r2*(vin-vout)/vout;if(cR1<0)return vdErr('Invalid: Vout must be < Vin');document.getElementById('vd-r1').value=parseFloat(cR1.toFixed(2));}
     else if(vdSolveFor==='r2'){if(isNaN(vin)||isNaN(r1)||isNaN(vout))return vdReset();if(vin-vout===0)return vdErr('Vin and Vout cannot be equal');cR2=r1*vout/(vin-vout);if(cR2<0)return vdErr('Invalid: Vout must be < Vin');document.getElementById('vd-r2').value=parseFloat(cR2.toFixed(2));}
-    const ratio=cVo/cV, totalR=cR1+cR2, iA=cV/totalR, pW=cV*iA;
+    const ratio=cVo/cV,totalR=cR1+cR2,iA=cV/totalR,pW=cV*iA;
     document.getElementById('vd-res-vout').textContent=isNaN(cVo)?'—':cVo.toFixed(4)+' V';
     document.getElementById('vd-res-ratio').textContent=isNaN(ratio)?'—':ratio.toFixed(5);
     if(!isNaN(iA)&&isFinite(iA)){if(iA<0.001){document.getElementById('vd-res-i').textContent=(iA*1e6).toFixed(2);document.getElementById('vd-res-i-unit').textContent='µA';}else if(iA<1){document.getElementById('vd-res-i').textContent=(iA*1000).toFixed(3);document.getElementById('vd-res-i-unit').textContent='mA';}else{document.getElementById('vd-res-i').textContent=iA.toFixed(4);document.getElementById('vd-res-i-unit').textContent='A';}}else{document.getElementById('vd-res-i').textContent='—';document.getElementById('vd-res-i-unit').textContent='—';}
-    if(!isNaN(pW)&&isFinite(pW)){if(pW>=1){document.getElementById('vd-res-p').textContent=pW.toFixed(3);document.getElementById('vd-res-p-unit').textContent='W total';}else{document.getElementById('vd-res-p').textContent=(pW*1000).toFixed(2);document.getElementById('vd-res-p-unit').textContent='mW total';}}else{document.getElementById('vd-res-p').textContent='—';document.getElementById('vd-res-p-unit').textContent='—';}
+    if(!isNaN(pW)&&isFinite(pW)){if(pW>=1){document.getElementById('vd-res-p').textContent=pW.toFixed(3);document.getElementById('vd-res-p-unit').textContent='W';}else{document.getElementById('vd-res-p').textContent=(pW*1000).toFixed(2);document.getElementById('vd-res-p-unit').textContent='mW';}}else{document.getElementById('vd-res-p').textContent='—';document.getElementById('vd-res-p-unit').textContent='—';}
     document.getElementById('dd-vin').textContent=isNaN(cV)?'Vin':cV.toFixed(2)+' V';
     document.getElementById('dd-vout').textContent=isNaN(cVo)?'Vout':cVo.toFixed(2)+' V';
     document.getElementById('dd-r1').textContent=isNaN(cR1)?'—':fmtR(cR1);
     document.getElementById('dd-r2').textContent=isNaN(cR2)?'—':fmtR(cR2);
-  } catch(e){vdErr('Calculation error');}
+  }catch(e){vdErr('Calculation error');}
 }
 
-// ═══════════════════════════════════════════
-// EDV CALCULATOR
-// ═══════════════════════════════════════════
-function edvPreset(maxV,minV,s2,s1,s0){
-  document.getElementById('edv-maxV').value=maxV;
-  document.getElementById('edv-minV').value=minV;
-  document.getElementById('edv-soc2').value=s2;
-  document.getElementById('edv-soc1').value=s1;
-  document.getElementById('edv-soc0').value=s0;
-  edvCalc();
-}
+// ══════════════════════════════════════
+// EDV
+// ══════════════════════════════════════
+function edvPreset(maxV,minV,s2,s1,s0){['edv-maxV','edv-minV','edv-soc2','edv-soc1','edv-soc0'].forEach((id,i)=>document.getElementById(id).value=[maxV,minV,s2,s1,s0][i]);edvCalc();}
 function edvCalc(){
-  const maxV=parseFloat(document.getElementById('edv-maxV').value)||4200;
-  const minV=parseFloat(document.getElementById('edv-minV').value)||2800;
-  const s2=parseFloat(document.getElementById('edv-soc2').value)||8;
-  const s1=parseFloat(document.getElementById('edv-soc1').value)||3;
-  const s0=parseFloat(document.getElementById('edv-soc0').value)||0;
-  const span=maxV-minV;
-  const v2=Math.round((s2*span/100)+minV);
-  const v1=Math.round((s1*span/100)+minV);
-  const v0=Math.round((s0*span/100)+minV);
-  document.getElementById('edv-v2').textContent=v2+' mV';
-  document.getElementById('edv-s2').textContent=s2.toFixed(1);
-  document.getElementById('edv-v1').textContent=v1+' mV';
-  document.getElementById('edv-s1').textContent=s1.toFixed(1);
-  document.getElementById('edv-v0').textContent=v0+' mV';
-  document.getElementById('edv-s0').textContent=s0.toFixed(1);
-  document.getElementById('t-maxV').textContent=maxV+' mV';
-  document.getElementById('t-v2').textContent=v2+' mV'; document.getElementById('t-s2').textContent=s2.toFixed(1)+'%';
-  document.getElementById('t-v1').textContent=v1+' mV'; document.getElementById('t-s1').textContent=s1.toFixed(1)+'%';
-  document.getElementById('t-v0').textContent=v0+' mV'; document.getElementById('t-s0').textContent=s0.toFixed(1)+'%';
+  const maxV=parseFloat(document.getElementById('edv-maxV').value)||4200,minV=parseFloat(document.getElementById('edv-minV').value)||2800;
+  const s2=parseFloat(document.getElementById('edv-soc2').value)||8,s1=parseFloat(document.getElementById('edv-soc1').value)||3,s0=parseFloat(document.getElementById('edv-soc0').value)||0;
+  const span=maxV-minV,v2=Math.round((s2*span/100)+minV),v1=Math.round((s1*span/100)+minV),v0=Math.round((s0*span/100)+minV);
+  document.getElementById('edv-v2').textContent=v2+' mV';document.getElementById('edv-s2').textContent=s2.toFixed(1);
+  document.getElementById('edv-v1').textContent=v1+' mV';document.getElementById('edv-s1').textContent=s1.toFixed(1);
+  document.getElementById('edv-v0').textContent=v0+' mV';document.getElementById('edv-s0').textContent=s0.toFixed(1);
+  document.getElementById('t-maxV').textContent=maxV+' mV';document.getElementById('t-v2').textContent=v2+' mV';document.getElementById('t-s2').textContent=s2.toFixed(1)+'%';
+  document.getElementById('t-v1').textContent=v1+' mV';document.getElementById('t-s1').textContent=s1.toFixed(1)+'%';
+  document.getElementById('t-v0').textContent=v0+' mV';document.getElementById('t-s0').textContent=s0.toFixed(1)+'%';
   document.getElementById('t-minV').textContent=minV+' mV';
-  document.getElementById('edv-m2').style.top=((maxV-v2)/span*100)+'%';
-  document.getElementById('edv-m1').style.top=((maxV-v1)/span*100)+'%';
-  document.getElementById('edv-m0').style.top=((maxV-v0)/span*100)+'%';
-  document.getElementById('edv-ml2').textContent=v2+' mV';
-  document.getElementById('edv-ml1').textContent=v1+' mV';
-  document.getElementById('edv-ml0').textContent=v0+' mV';
-  document.getElementById('edv-results').style.display='block';
-  document.getElementById('edv-noResults').style.display='none';
+  document.getElementById('edv-m2').style.top=((maxV-v2)/span*100)+'%';document.getElementById('edv-ml2').textContent=v2+' mV';
+  document.getElementById('edv-m1').style.top=((maxV-v1)/span*100)+'%';document.getElementById('edv-ml1').textContent=v1+' mV';
+  document.getElementById('edv-m0').style.top=((maxV-v0)/span*100)+'%';document.getElementById('edv-ml0').textContent=v0+' mV';
+  document.getElementById('edv-results').style.display='';document.getElementById('edv-noResults').style.display='none';
 }
 
-// ═══════════════════════════════════════════
-// BQ78350 AOLD/ASCD
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
+// BQ78350
+// ══════════════════════════════════════
 const OCD_RSNS1=[{code:'0000',mv:17},{code:'0001',mv:22},{code:'0010',mv:28},{code:'0011',mv:33},{code:'0100',mv:39},{code:'0101',mv:44},{code:'0110',mv:50},{code:'0111',mv:56},{code:'1000',mv:61},{code:'1001',mv:67},{code:'1010',mv:72},{code:'1011',mv:78},{code:'1100',mv:83},{code:'1101',mv:89},{code:'1110',mv:94},{code:'1111',mv:100}];
 const OCD_RSNS0=[{code:'0000',mv:8},{code:'0001',mv:11},{code:'0010',mv:14},{code:'0011',mv:17},{code:'0100',mv:19},{code:'0101',mv:25},{code:'0110',mv:28},{code:'0111',mv:31},{code:'1000',mv:31},{code:'1001',mv:33},{code:'1010',mv:36},{code:'1011',mv:39},{code:'1100',mv:42},{code:'1101',mv:44},{code:'1110',mv:47},{code:'1111',mv:50}];
 const ASCD_RSNS1=[{code:'000',mv:44},{code:'001',mv:67},{code:'010',mv:89},{code:'011',mv:111},{code:'100',mv:133},{code:'101',mv:155},{code:'110',mv:178},{code:'111',mv:200}];
 const ASCD_RSNS0=[{code:'000',mv:22},{code:'001',mv:33},{code:'010',mv:44},{code:'011',mv:56},{code:'100',mv:67},{code:'101',mv:78},{code:'110',mv:89},{code:'111',mv:100}];
-
 function bq78Calc(){
-  const rm=parseFloat(document.getElementById('bq78-rsense').value);
-  const rsns=document.getElementById('bq78-rsns').value;
-  const ocdSel=document.getElementById('bq78-ocd-thr');
-  const ascdSel=document.getElementById('bq78-ascd-thr');
-  ocdSel.innerHTML=''; ascdSel.innerHTML='';
-  document.getElementById('bq78-out').style.display='none';
-  if(!rm||rm<=0){alert('Enter a valid Rsense value in milliohms.');return;}
-  (rsns==='1'?OCD_RSNS1:OCD_RSNS0).forEach((row,idx)=>{const I=row.mv/rm;const opt=document.createElement('option');opt.value=idx;opt.textContent=`${row.mv} mV  •  I ≈ ${I.toFixed(2)} A`;ocdSel.appendChild(opt);});
-  (rsns==='1'?ASCD_RSNS1:ASCD_RSNS0).forEach((row,idx)=>{const I=row.mv/rm;const opt=document.createElement('option');opt.value=idx;opt.textContent=`${row.mv} mV  •  I ≈ ${I.toFixed(2)} A`;ascdSel.appendChild(opt);});
+  const rm=parseFloat(document.getElementById('bq78-rsense').value),rsns=document.getElementById('bq78-rsns').value;
+  const ocdSel=document.getElementById('bq78-ocd-thr'),ascdSel=document.getElementById('bq78-ascd-thr');
+  ocdSel.innerHTML='';ascdSel.innerHTML='';document.getElementById('bq78-out').style.display='none';
+  if(!rm||rm<=0){alert('Enter a valid Rsense in milliohms.');return;}
+  (rsns==='1'?OCD_RSNS1:OCD_RSNS0).forEach((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${r.mv} mV  •  I ≈ ${(r.mv/rm).toFixed(2)} A`;ocdSel.appendChild(o);});
+  (rsns==='1'?ASCD_RSNS1:ASCD_RSNS0).forEach((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${r.mv} mV  •  I ≈ ${(r.mv/rm).toFixed(2)} A`;ascdSel.appendChild(o);});
 }
 function bq78GetData(){
-  const rm=parseFloat(document.getElementById('bq78-rsense').value);
-  const rsns=document.getElementById('bq78-rsns').value;
-  if(!rm||rm<=0){alert('Enter a valid Rsense value and click Calculate first.');return null;}
-  const ocdIdx=parseInt(document.getElementById('bq78-ocd-thr').value,10);
-  const ascdIdx=parseInt(document.getElementById('bq78-ascd-thr').value,10);
-  const ocdDly=parseInt(document.getElementById('bq78-ocd-delay').value,10);
-  const ascdDly=parseInt(document.getElementById('bq78-ascd-delay').value,10);
-  if(isNaN(ocdIdx)||isNaN(ascdIdx)){alert('Click "Calculate OCD / ASCD currents" first.');return null;}
-  const ocdTbl=rsns==='1'?OCD_RSNS1:OCD_RSNS0;
-  const ascdTbl=rsns==='1'?ASCD_RSNS1:ASCD_RSNS0;
-  return{rm,rsns,ocd:ocdTbl[ocdIdx],ascd:ascdTbl[ascdIdx],ocdDly,ascdDly};
+  const rm=parseFloat(document.getElementById('bq78-rsense').value),rsns=document.getElementById('bq78-rsns').value;
+  if(!rm||rm<=0){alert('Enter a valid Rsense and click Calculate first.');return null;}
+  const oi=parseInt(document.getElementById('bq78-ocd-thr').value,10),ai=parseInt(document.getElementById('bq78-ascd-thr').value,10);
+  if(isNaN(oi)||isNaN(ai)){alert('Click Calculate first.');return null;}
+  return{rm,rsns,ocd:(rsns==='1'?OCD_RSNS1:OCD_RSNS0)[oi],ascd:(rsns==='1'?ASCD_RSNS1:ASCD_RSNS0)[ai],ocdDly:parseInt(document.getElementById('bq78-ocd-delay').value,10),ascdDly:parseInt(document.getElementById('bq78-ascd-delay').value,10)};
 }
 function bq78Summary(){
-  const d=bq78GetData(); if(!d) return;
-  const Iocd=d.ocd.mv/d.rm, Iascd=d.ascd.mv/d.rm;
-  const ocdDelayMs=[8,20,40,80,160,320,640,1280][d.ocdDly];
-  const ascdDelayUs=[70,100,200,400][d.ascdDly];
+  const d=bq78GetData();if(!d)return;
   const ocdReg=((d.ocdDly&0x7)<<4)|(parseInt(d.ocd.code,2)&0xF);
   const ascdReg=((parseInt(d.rsns)&0x1)<<7)|((d.ascdDly&0x3)<<3)|(parseInt(d.ascd.code,2)&0x7);
-  let html='<h4 class="output-bold">Selected AOLD / ASCD configuration</h4>';
-  html+=`<p><span class="aold-text">AOLD</span></p>`;
-  html+=`<p class="output-bold">Threshold: ${d.ocd.mv} mV, Itrip ≈ ${Iocd.toFixed(2)} A</p>`;
-  html+=`<p class="output-bold">Delay: ${ocdDelayMs} ms</p>`;
-  html+=`<p class="output-bold">AOLD register: <code class="aold-reg">0x${ocdReg.toString(16).padStart(2,'0').toUpperCase()}</code></p><br>`;
-  html+=`<p><span class="ascd-text">ASCD</span></p>`;
-  html+=`<p class="output-bold">RSNS = ${d.rsns}</p>`;
-  html+=`<p class="output-bold">Threshold: ${d.ascd.mv} mV, Itrip ≈ ${Iascd.toFixed(2)} A</p>`;
-  html+=`<p class="output-bold">Delay: ${ascdDelayUs} µs</p>`;
-  html+=`<p class="output-bold">ASCD register: <code class="ascd-reg">0x${ascdReg.toString(16).padStart(2,'0').toUpperCase()}</code></p>`;
-  const out=document.getElementById('bq78-out'); out.innerHTML=html; out.style.display='block';
+  const ocdMs=[8,20,40,80,160,320,640,1280][d.ocdDly],ascdUs=[70,100,200,400][d.ascdDly];
+  let h='<h4 class="output-bold">AOLD / ASCD Configuration</h4>';
+  h+=`<p><span class="aold-text">AOLD</span></p><p class="output-bold">Threshold: ${d.ocd.mv} mV, Itrip ≈ ${(d.ocd.mv/d.rm).toFixed(2)} A</p><p class="output-bold">Delay: ${ocdMs} ms</p><p class="output-bold">Register: <code class="aold-reg">0x${ocdReg.toString(16).padStart(2,'0').toUpperCase()}</code></p><br>`;
+  h+=`<p><span class="ascd-text">ASCD</span></p><p class="output-bold">RSNS=${d.rsns} | Threshold: ${d.ascd.mv} mV, Itrip ≈ ${(d.ascd.mv/d.rm).toFixed(2)} A</p><p class="output-bold">Delay: ${ascdUs} µs</p><p class="output-bold">Register: <code class="ascd-reg">0x${ascdReg.toString(16).padStart(2,'0').toUpperCase()}</code></p>`;
+  const out=document.getElementById('bq78-out');out.innerHTML=h;out.style.display='block';
 }
 function bq78Hex(){
-  const d=bq78GetData(); if(!d) return;
+  const d=bq78GetData();if(!d)return;
   const ocdReg=((d.ocdDly&0x7)<<4)|(parseInt(d.ocd.code,2)&0xF);
   const ascdReg=((parseInt(d.rsns)&0x1)<<7)|((d.ascdDly&0x3)<<3)|(parseInt(d.ascd.code,2)&0x7);
   const out=document.getElementById('bq78-out');
-  out.innerHTML=`<h4 class="output-bold">Hex values</h4><p class="output-bold">AOLD register: <code class="aold-reg">0x${ocdReg.toString(16).padStart(2,'0').toUpperCase()}</code></p><p class="output-bold">ASCD register: <code class="ascd-reg">0x${ascdReg.toString(16).padStart(2,'0').toUpperCase()}</code></p>`;
+  out.innerHTML=`<h4 class="output-bold">Hex Values</h4><p class="output-bold">AOLD: <code class="aold-reg">0x${ocdReg.toString(16).padStart(2,'0').toUpperCase()}</code></p><p class="output-bold">ASCD: <code class="ascd-reg">0x${ascdReg.toString(16).padStart(2,'0').toUpperCase()}</code></p>`;
   out.style.display='block';
 }
 
-// ═══════════════════════════════════════════
-// BQ76952 PROTECTION
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
+// BQ76952
+// ══════════════════════════════════════
 function bq76Calc(){
   const rs=parseFloat(document.getElementById('bq76-rsense').value);
   if(!rs||rs<=0){alert('Enter valid Rsense value');return;}
-  // SCD
-  const scd=document.getElementById('bq76-scd'); scd.innerHTML='';
-  [[0,10],[1,20],[2,40],[3,60],[4,80],[5,100],[6,125],[7,150],[8,175],[9,200],[10,250],[11,300],[12,350],[13,400],[14,450],[15,500]].forEach(e=>{scd.add(new Option(`${e[0]} = ${e[1]} mV → ${(e[1]/rs).toFixed(2)} A`,e[0]));});
-  // SCD Delay
-  const sd=document.getElementById('bq76-scdDelay'); sd.innerHTML='';
-  for(let i=1;i<=30;i++){sd.add(new Option(`${i} × 15 µs = ${i*15} µs`,i));}
-  // OCC
-  const occ=document.getElementById('bq76-occ'); occ.innerHTML='';
-  for(let c=2;c<=62;c++){const mv=c*2;occ.add(new Option(`${c} = ${mv} mV → ${(mv/rs).toFixed(2)} A`,c));}
-  // OCC/OCD Delays
-  ['bq76-occDelay','bq76-ocd1Delay','bq76-ocd2Delay'].forEach(id=>{const d=document.getElementById(id);d.innerHTML='';for(let c=1;c<=127;c++){d.add(new Option(`${c} → ${((c+2)*3.3).toFixed(1)} ms`,c));}});
-  // OCD1, OCD2
+  const scd=document.getElementById('bq76-scd');scd.innerHTML='';
+  [[0,10],[1,20],[2,40],[3,60],[4,80],[5,100],[6,125],[7,150],[8,175],[9,200],[10,250],[11,300],[12,350],[13,400],[14,450],[15,500]].forEach(e=>scd.add(new Option(`${e[0]} = ${e[1]} mV → ${(e[1]/rs).toFixed(2)} A`,e[0])));
+  const sd=document.getElementById('bq76-scdDelay');sd.innerHTML='';for(let i=1;i<=30;i++)sd.add(new Option(`${i} × 15 µs = ${i*15} µs`,i));
+  const occ=document.getElementById('bq76-occ');occ.innerHTML='';for(let c=2;c<=62;c++){const mv=c*2;occ.add(new Option(`${c} = ${mv} mV → ${(mv/rs).toFixed(2)} A`,c));}
+  ['bq76-occDelay','bq76-ocd1Delay','bq76-ocd2Delay'].forEach(id=>{const d=document.getElementById(id);d.innerHTML='';for(let c=1;c<=127;c++)d.add(new Option(`${c} → ${((c+2)*3.3).toFixed(1)} ms`,c));});
   ['bq76-ocd1','bq76-ocd2'].forEach(id=>{const d=document.getElementById(id);d.innerHTML='';for(let c=2;c<=100;c++){const mv=c*2;d.add(new Option(`${c} = ${mv} mV → ${(mv/rs).toFixed(2)} A`,c));}});
 }
 function bq76Show(){
-  const ids=['bq76-scd','bq76-scdDelay','bq76-occ','bq76-occDelay','bq76-ocd1','bq76-ocd1Delay','bq76-ocd2','bq76-ocd2Delay'];
   if(!document.getElementById('bq76-scd').options.length){alert('Click Calculate first.');return;}
   const v=id=>document.getElementById(id).value;
   const out=document.getElementById('bq76-output');
@@ -728,149 +722,129 @@ function bq76Show(){
   out.style.display='block';
 }
 
-// ═══════════════════════════════════════════
-// HEX / BIN / DEC CONVERTER
-// ═══════════════════════════════════════════
-let ncBits = 8;
-let ncLock = false; // prevent re-entrant updates
-
-function ncSetBits(bits, btn) {
-  ncBits = bits;
-  document.querySelectorAll('[id^="nc-bits-"]').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  // re-render current value if any
-  const hex = document.getElementById('nc-hex').value.trim();
-  if (hex) ncFromHex();
-}
-
-function ncClear() {
-  ['nc-hex','nc-dec','nc-bin','nc-oct'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('nc-bitview').innerHTML = '<span style="color:var(--text-hint);font-size:12px">Enter a value above to see bit layout</span>';
-  document.getElementById('nc-info').style.display = 'none';
-  document.getElementById('nc-err').style.display = 'none';
-}
-
-function ncSetHex(h) {
-  document.getElementById('nc-hex').value = h;
-  ncFromHex();
-}
-
-function ncShowErr(msg) {
-  const e = document.getElementById('nc-err');
-  e.textContent = msg; e.style.display = 'block';
-}
-function ncClearErr() { document.getElementById('nc-err').style.display = 'none'; }
-
-function ncUpdate(val) {
-  if (ncLock) return;
-  ncLock = true;
-  ncClearErr();
-
-  // Apply bit mask if limited
-  if (ncBits > 0) {
-    const mask = (ncBits === 32) ? 0xFFFFFFFF : (Math.pow(2, ncBits) - 1);
-    val = val & mask;
-  }
-
-  // Check range
-  if (val < 0) { ncShowErr('Negative values not supported — use unsigned integers.'); ncLock = false; return; }
-  if (ncBits > 0 && val > Math.pow(2, ncBits) - 1) {
-    ncShowErr(`Value exceeds ${ncBits}-bit range (max ${Math.pow(2, ncBits) - 1})`);
-    ncLock = false; return;
-  }
-
-  const hexStr = val.toString(16).toUpperCase();
-  const decStr = val.toString(10);
-  const binStr = val.toString(2);
-  const octStr = val.toString(8);
-
-  // Pad hex/bin based on bit width
-  let padLen = ncBits > 0 ? Math.ceil(ncBits / 4) : 0;
-  let binPad = ncBits > 0 ? ncBits : binStr.length;
-
-  const hexPadded = padLen > 0 ? hexStr.padStart(padLen, '0') : hexStr;
-  const binPadded = binStr.padStart(binPad, '0');
-  // Group binary into nibbles
-  const binGrouped = binPadded.replace(/(.{4})(?=.)/g, '$1 ');
-
-  document.getElementById('nc-hex').value = hexPadded;
-  document.getElementById('nc-dec').value = decStr;
-  document.getElementById('nc-bin').value = binGrouped;
-  document.getElementById('nc-oct').value = octStr;
-
-  // Bit view
-  const bv = document.getElementById('nc-bitview');
-  const bits = binPadded.split('');
-  const totalBits = bits.length;
-  let html = '';
-  bits.forEach((b, i) => {
-    const bitPos = totalBits - 1 - i;
-    const isSet = b === '1';
-    const isNibbleStart = (totalBits - i) % 4 === 0 && i !== 0;
-    if (isNibbleStart) html += '<span style="width:6px;display:inline-block"></span>';
-    html += `<span title="Bit ${bitPos}" style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;">
-      <span style="font-size:9px;color:var(--text-hint);line-height:1">${bitPos}</span>
-      <span style="width:22px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:13px;font-weight:500;font-family:var(--mono);
-        background:${isSet ? 'var(--green)' : 'var(--surface2)'};
-        color:${isSet ? '#fff' : 'var(--text-hint)'};
-        border:0.5px solid ${isSet ? 'var(--green-border)' : 'var(--border-strong)'}">${b}</span>
-    </span>`;
+// ══════════════════════════════════════
+// HEX / BIN / DEC
+// ══════════════════════════════════════
+let ncBits=8,ncLock=false;
+function ncSetBits(bits,btn){ncBits=bits;document.querySelectorAll('[id^="nc-bits-"]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const h=document.getElementById('nc-hex').value.trim();if(h)ncFromHex();}
+function ncClear(){['nc-hex','nc-dec','nc-bin','nc-oct'].forEach(id=>document.getElementById(id).value='');document.getElementById('nc-bitview').innerHTML='<span style="color:var(--text-hint);font-size:11px;font-family:var(--mono)">Enter a value above</span>';document.getElementById('nc-info').style.display='none';document.getElementById('nc-err').style.display='none';}
+function ncSetHex(h){document.getElementById('nc-hex').value=h;ncFromHex();}
+function ncShowErr(m){const e=document.getElementById('nc-err');e.textContent=m;e.style.display='block';}
+function ncClearErr(){document.getElementById('nc-err').style.display='none';}
+function ncUpdate(val){
+  if(ncLock)return;ncLock=true;ncClearErr();
+  if(ncBits>0){const mask=ncBits===32?0xFFFFFFFF:(Math.pow(2,ncBits)-1);val=val&mask;}
+  if(val<0){ncShowErr('Negative values not supported.');ncLock=false;return;}
+  if(ncBits>0&&val>Math.pow(2,ncBits)-1){ncShowErr(`Value exceeds ${ncBits}-bit range.`);ncLock=false;return;}
+  const hexStr=val.toString(16).toUpperCase(),decStr=val.toString(10),binStr=val.toString(2),octStr=val.toString(8);
+  const padLen=ncBits>0?Math.ceil(ncBits/4):0,binPad=ncBits>0?ncBits:binStr.length;
+  const hexPadded=padLen>0?hexStr.padStart(padLen,'0'):hexStr,binPadded=binStr.padStart(binPad,'0');
+  const binGrouped=binPadded.replace(/(.{4})(?=.)/g,'$1 ');
+  document.getElementById('nc-hex').value=hexPadded;document.getElementById('nc-dec').value=decStr;document.getElementById('nc-bin').value=binGrouped;document.getElementById('nc-oct').value=octStr;
+  const bv=document.getElementById('nc-bitview'),bits=binPadded.split(''),total=bits.length;
+  let html='';
+  bits.forEach((b,i)=>{
+    const pos=total-1-i,isSet=b==='1',isNib=(total-i)%4===0&&i!==0;
+    if(isNib)html+='<span style="width:5px;display:inline-block"></span>';
+    html+=`<span title="Bit ${pos}" style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:8px;color:var(--text-hint);line-height:1">${pos}</span><span style="width:21px;height:25px;display:flex;align-items:center;justify-content:center;border-radius:3px;font-size:12px;font-weight:500;font-family:var(--mono);background:${isSet?'var(--green)':'var(--surface2)'};color:${isSet?'#0d0d0f':'var(--text-hint)'};border:0.5px solid ${isSet?'var(--green-border)':'var(--border-strong)'}">${b}</span></span>`;
   });
-  bv.innerHTML = html;
+  bv.innerHTML=html;
+  const usedBits=binStr.length,byteCount=Math.ceil(binPadded.length/8);
+  let signedVal='—';
+  if(ncBits>0&&bits[0]==='1')signedVal=(val-Math.pow(2,ncBits)).toString();
+  else if(ncBits>0)signedVal=decStr;
+  document.getElementById('nc-r-bits').textContent=usedBits;document.getElementById('nc-r-bytes').textContent=byteCount;document.getElementById('nc-r-signed').textContent=signedVal;
+  document.getElementById('nc-info').style.display='block';
+  ncLock=false;
+}
+function ncFromHex(){const raw=document.getElementById('nc-hex').value.trim().replace(/^0x/i,'').replace(/\s/g,'');if(!raw){ncClear();return;}if(!/^[0-9A-Fa-f]+$/.test(raw)){ncShowErr('Invalid hex.');return;}const val=parseInt(raw,16);if(isNaN(val))return;ncUpdate(val);}
+function ncFromDec(){const raw=document.getElementById('nc-dec').value.trim();if(!raw){ncClear();return;}if(!/^\d+$/.test(raw)){ncShowErr('Invalid decimal.');return;}const val=parseInt(raw,10);if(isNaN(val))return;ncUpdate(val);}
+function ncFromBin(){const raw=document.getElementById('nc-bin').value.trim().replace(/\s/g,'');if(!raw){ncClear();return;}if(!/^[01]+$/.test(raw)){ncShowErr('Invalid binary.');return;}const val=parseInt(raw,2);if(isNaN(val))return;ncUpdate(val);}
+function ncFromOct(){const raw=document.getElementById('nc-oct').value.trim();if(!raw){ncClear();return;}if(!/^[0-7]+$/.test(raw)){ncShowErr('Invalid octal.');return;}const val=parseInt(raw,8);if(isNaN(val))return;ncUpdate(val);}
 
-  // Info chips
-  const usedBits = binStr.length; // actual bits needed
-  const byteCount = Math.ceil(binPadded.length / 8);
-  // 2's complement signed (only meaningful for fixed width)
-  let signedVal = '—';
-  if (ncBits > 0 && bits[0] === '1') {
-    signedVal = (val - Math.pow(2, ncBits)).toString();
-  } else if (ncBits > 0) {
-    signedVal = decStr;
+// ══════════════════════════════════════
+// STM32 TIMER
+// ══════════════════════════════════════
+let stmMode='overflow';
+function stmSetMode(m,btn){stmMode=m;document.querySelectorAll('.mode-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('stm-in-overflow').style.display=m==='overflow'?'':'none';document.getElementById('stm-in-pwm').style.display=m==='pwm'?'':'none';document.getElementById('stm-in-capture').style.display=m==='capture'?'':'none';stmCalc();}
+function stmSetClk(mhz){document.getElementById('stm-clk').value=mhz;document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('active',parseInt(b.textContent)===mhz));stmCalc();}
+function stmSyncClk(){const v=parseInt(document.getElementById('stm-clk').value);document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('active',parseInt(b.textContent)===v));stmCalc();}
+function stmFmtHz(hz){if(hz>=1e6)return(hz/1e6).toFixed(4)+' MHz';if(hz>=1e3)return(hz/1e3).toFixed(4)+' kHz';return hz.toFixed(4)+' Hz';}
+function stmFmtPeriod(hz){const s=1/hz;if(s<1e-6)return{v:(s*1e9).toFixed(2),u:'ns'};if(s<1e-3)return{v:(s*1e6).toFixed(2),u:'µs'};if(s<1)return{v:(s*1e3).toFixed(4),u:'ms'};return{v:s.toFixed(4),u:'s'};}
+function stmHex4(n){return'0x'+Math.min(n,0xFFFFFFFF).toString(16).toUpperCase().padStart(4,'0');}
+function stmBestPSC(clkHz,tgtHz,arrMax){let bP=0,bA=0,bE=Infinity;const mx=Math.min(65535,Math.ceil(clkHz/tgtHz));for(let p=0;p<=mx;p++){const tk=clkHz/(p+1),a=Math.round(tk/tgtHz)-1;if(a<0||a>arrMax)continue;const ach=tk/(a+1),e=Math.abs(ach-tgtHz)/tgtHz;if(e<bE){bE=e;bP=p;bA=a;}if(e<1e-10)break;}return{psc:bP,arr:bA};}
+function stmShowResults(v){document.getElementById('stm-empty').style.display=v?'none':'flex';document.getElementById('stm-results').style.display=v?'':'none';document.getElementById('stm-code-card').style.display=v?'':'none';}
+function stmShowErr(m){const e=document.getElementById('stm-err-chip');e.textContent='⚠  '+m;e.style.display='block';}
+function stmClearErr(){document.getElementById('stm-err-chip').style.display='none';}
+function stmRenderRegs(psc,arr,ccr){
+  document.getElementById('stm-r-psc').textContent=psc;document.getElementById('stm-r-arr').textContent=arr;
+  document.getElementById('stm-r-psc-hex').textContent=stmHex4(psc);document.getElementById('stm-r-arr-hex').textContent=stmHex4(arr);
+  document.getElementById('stm-ccr-row').style.display=ccr!==null?'':'none';
+  if(ccr!==null){document.getElementById('stm-r-ccr').textContent=ccr;document.getElementById('stm-r-ccr-hex').textContent=stmHex4(ccr);}
+}
+function stmRenderMetrics(achHz,tgtHz,duty){
+  const p=stmFmtPeriod(achHz),errPct=Math.abs(achHz-tgtHz)/tgtHz*100;
+  document.getElementById('stm-m-freq').textContent=stmFmtHz(achHz);document.getElementById('stm-m-freq-u').textContent='';
+  document.getElementById('stm-m-period').textContent=p.v;document.getElementById('stm-m-period-u').textContent=p.u;
+  document.getElementById('stm-m-err').textContent=errPct.toFixed(5)+'%';
+  const dc=document.getElementById('stm-m-duty-chip');if(duty!==null){dc.style.display='';document.getElementById('stm-m-duty').textContent=duty.toFixed(3);}else dc.style.display='none';
+  const acc=Math.max(0,100-errPct),fill=document.getElementById('stm-acc-fill');
+  fill.style.width=Math.min(100,acc)+'%';fill.style.background=errPct<0.01?'var(--green)':errPct<1?'var(--amber)':'var(--red)';
+  document.getElementById('stm-acc-pct').textContent=acc.toFixed(4)+'%';
+}
+function stmCalc(){
+  const clkMHz=parseFloat(document.getElementById('stm-clk').value),arrMax=parseInt(document.getElementById('stm-bits').value);
+  stmClearErr();if(!clkMHz||clkMHz<=0){stmShowResults(false);return;}
+  const clkHz=clkMHz*1e6;stmShowResults(true);document.getElementById('stm-duty-wrap').style.display='none';
+  if(stmMode==='overflow'){
+    const tgt=parseFloat(document.getElementById('stm-ov-freq').value);
+    if(!tgt||tgt<=0){stmShowErr('Enter a valid overflow frequency.');return;}
+    if(tgt>clkHz){stmShowErr('Target frequency exceeds timer clock.');return;}
+    const{psc,arr}=stmBestPSC(clkHz,tgt,arrMax),ach=clkHz/((psc+1)*(arr+1));
+    stmRenderRegs(psc,arr,null);document.getElementById('stm-r-arr-desc').textContent='Write to TIMx_ARR';
+    stmRenderMetrics(ach,tgt,null);
+    document.getElementById('stm-formula-block').textContent=`TIMxCLK   = ${clkMHz} MHz\nPSC + 1   = ${psc+1}   →   Tick = ${stmFmtHz(clkHz/(psc+1))}\nCounter+1 = ${arr+1}   →   f_update = ${stmFmtHz(ach)}\nPeriod    = ${stmFmtPeriod(ach).v} ${stmFmtPeriod(ach).u}`;
+    document.getElementById('stm-code-out').innerHTML=`<span class="code-comment">/* STM32 HAL — Timer Update Interrupt */</span>\n<span class="code-comment">/* ${clkMHz} MHz  |  Achieved: ${stmFmtHz(ach)} */</span>\n\nhtim.Init.Prescaler         = <span class="code-num">${psc}</span>;\nhtim.Init.Period            = <span class="code-num">${arr}</span>;\nhtim.Init.CounterMode       = TIM_COUNTERMODE_UP;\nhtim.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;\n\n<span class="code-fn">HAL_TIM_Base_Init</span>(&htim);\n<span class="code-fn">HAL_TIM_Base_Start_IT</span>(&htim);\n\n<span class="code-kw">void</span> <span class="code-fn">HAL_TIM_PeriodElapsedCallback</span>(TIM_HandleTypeDef *htim) {\n  <span class="code-comment">/* fires at ${stmFmtHz(ach)} */</span>\n}`;
+  } else if(stmMode==='pwm'){
+    const tgt=parseFloat(document.getElementById('stm-pwm-freq').value),duty=parseFloat(document.getElementById('stm-pwm-duty').value),res=parseInt(document.getElementById('stm-pwm-res').value);
+    if(!tgt||tgt<=0){stmShowErr('Enter a valid PWM frequency.');return;}
+    if(isNaN(duty)||duty<0||duty>100){stmShowErr('Duty must be 0–100%.');return;}
+    if(!res||res<2){stmShowErr('Resolution must be ≥ 2.');return;}
+    const arr=res-1;if(arr>arrMax){stmShowErr(`Counter exceeds timer limit.`);return;}
+    const psc=Math.round(clkHz/(tgt*res))-1;
+    if(psc<0){stmShowErr('PSC < 0 — reduce resolution or increase clock.');return;}
+    if(psc>65535){stmShowErr('PSC > 65535.');return;}
+    const ccr=Math.round((duty/100)*res),ach=clkHz/((psc+1)*(arr+1)),achDuty=(ccr/(arr+1))*100;
+    stmRenderRegs(psc,arr,ccr);document.getElementById('stm-r-arr-desc').textContent='Write to TIMx_ARR  (= resolution − 1)';
+    stmRenderMetrics(ach,tgt,achDuty);
+    document.getElementById('stm-duty-wrap').style.display='';
+    const dp=Math.min(100,Math.max(0,achDuty));document.getElementById('stm-duty-on').style.width=dp+'%';document.getElementById('stm-duty-on-lbl').textContent=dp.toFixed(1)+'%';
+    document.getElementById('stm-formula-block').textContent=`TIMxCLK    = ${clkMHz} MHz\nResolution = ${res} steps  →  Counter = ${arr}\nPSC + 1    = ${psc+1}   →  Tick = ${stmFmtHz(clkHz/(psc+1))}\nf_pwm      = ${stmFmtHz(ach)}\nCCR        = ${ccr}   →  Duty = ${achDuty.toFixed(3)}%`;
+    document.getElementById('stm-code-out').innerHTML=`<span class="code-comment">/* STM32 HAL — PWM | ${stmFmtHz(ach)} | Duty ${achDuty.toFixed(2)}% */</span>\n\nhtim.Init.Prescaler         = <span class="code-num">${psc}</span>;\nhtim.Init.Period            = <span class="code-num">${arr}</span>;\nhtim.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;\n\nsConfigOC.OCMode     = TIM_OCMODE_PWM1;\nsConfigOC.Pulse      = <span class="code-num">${ccr}</span>;\nsConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;\n\n<span class="code-fn">HAL_TIM_PWM_Init</span>(&htim);\n<span class="code-fn">HAL_TIM_PWM_ConfigChannel</span>(&htim, &sConfigOC, TIM_CHANNEL_1);\n<span class="code-fn">HAL_TIM_PWM_Start</span>(&htim, TIM_CHANNEL_1);\n\n<span class="code-comment">/* Update duty: */</span>\n<span class="code-fn">__HAL_TIM_SET_COMPARE</span>(&htim, TIM_CHANNEL_1, <span class="code-num">newCCR</span>);`;
+  } else if(stmMode==='capture'){
+    const sig=parseFloat(document.getElementById('stm-cap-freq').value),minC=parseInt(document.getElementById('stm-cap-counts').value);
+    if(!sig||sig<=0){stmShowErr('Enter a valid signal frequency.');return;}
+    if(!minC||minC<2){stmShowErr('Min counts must be ≥ 2.');return;}
+    const psc=Math.round(clkHz/(sig*minC))-1;
+    if(psc<0){stmShowErr('PSC < 0.');return;}if(psc>65535){stmShowErr('PSC > 65535.');return;}
+    const achTick=clkHz/(psc+1),cnt=Math.round(achTick/sig),achSig=achTick/cnt,arr=arrMax;
+    stmRenderRegs(psc,arr,null);document.getElementById('stm-r-arr-desc').textContent='Set to MAX — no overflow limit';
+    stmRenderMetrics(achSig,sig,null);
+    document.getElementById('stm-formula-block').textContent=`TIMxCLK     = ${clkMHz} MHz\nPSC + 1     = ${psc+1}   →  Tick = ${stmFmtHz(achTick)}\nAt ${stmFmtHz(sig)}: ~${cnt} counts/period\nResolution: 1 count = ${((1/achTick)*1e6).toFixed(4)} µs`;
+    document.getElementById('stm-code-out').innerHTML=`<span class="code-comment">/* STM32 HAL — Input Capture | Tick: ${stmFmtHz(achTick)} */</span>\n\nhtim.Init.Prescaler   = <span class="code-num">${psc}</span>;\nhtim.Init.Period      = <span class="code-num">${arr}</span>;\nhtim.Init.CounterMode = TIM_COUNTERMODE_UP;\n\nsConfigIC.ICPolarity  = TIM_INPUTCHANNELPOLARITY_RISING;\nsConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;\nsConfigIC.ICPrescaler = TIM_ICPSC_DIV1;\n\n<span class="code-fn">HAL_TIM_IC_Init</span>(&htim);\n<span class="code-fn">HAL_TIM_IC_ConfigChannel</span>(&htim, &sConfigIC, TIM_CHANNEL_1);\n<span class="code-fn">HAL_TIM_IC_Start_IT</span>(&htim, TIM_CHANNEL_1);\n\n<span class="code-kw">float</span> measured_hz = (float)<span class="code-num">${Math.round(achTick)}UL</span> / (float)diff;`;
   }
-  document.getElementById('nc-r-bits').textContent = usedBits;
-  document.getElementById('nc-r-bytes').textContent = byteCount;
-  document.getElementById('nc-r-signed').textContent = signedVal;
-  document.getElementById('nc-info').style.display = 'block';
-
-  ncLock = false;
 }
+function stmCopyCode(){const txt=document.getElementById('stm-code-out').innerText;navigator.clipboard.writeText(txt).then(()=>{const b=document.querySelector('.copy-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500);});}
 
-function ncFromHex() {
-  const raw = document.getElementById('nc-hex').value.trim().replace(/^0x/i, '').replace(/\s/g,'');
-  if (!raw) { ncClear(); return; }
-  if (!/^[0-9A-Fa-f]+$/.test(raw)) { ncShowErr('Invalid hex — use 0–9 and A–F only.'); return; }
-  const val = parseInt(raw, 16);
-  if (isNaN(val)) return;
-  ncUpdate(val);
-}
+// Hz ↔ seconds sync
+let _sl=false;
+function _h2s(hId,sId){if(_sl)return;_sl=true;const hz=parseFloat(document.getElementById(hId).value);document.getElementById(sId).value=hz>0?(1/hz).toFixed(10).replace(/0+$/,'').replace(/\.$/,''):'';_sl=false;}
+function _s2h(sId,hId){if(_sl)return;_sl=true;const s=parseFloat(document.getElementById(sId).value);document.getElementById(hId).value=s>0?(1/s).toFixed(6).replace(/0+$/,'').replace(/\.$/,''):'';_sl=false;}
+function stmOvHzToSec(){_h2s('stm-ov-freq','stm-ov-sec');}function stmOvSecToHz(){_s2h('stm-ov-sec','stm-ov-freq');}
+function stmPwmHzToSec(){_h2s('stm-pwm-freq','stm-pwm-sec');}function stmPwmSecToHz(){_s2h('stm-pwm-sec','stm-pwm-freq');}
+function stmCapHzToSec(){_h2s('stm-cap-freq','stm-cap-sec');}function stmCapSecToHz(){_s2h('stm-cap-sec','stm-cap-freq');}
 
-function ncFromDec() {
-  const raw = document.getElementById('nc-dec').value.trim().replace(/\s/g,'');
-  if (!raw) { ncClear(); return; }
-  if (!/^\d+$/.test(raw)) { ncShowErr('Invalid decimal — use digits 0–9 only.'); return; }
-  const val = parseInt(raw, 10);
-  if (isNaN(val)) return;
-  ncUpdate(val);
-}
-
-function ncFromBin() {
-  const raw = document.getElementById('nc-bin').value.trim().replace(/\s/g,'');
-  if (!raw) { ncClear(); return; }
-  if (!/^[01]+$/.test(raw)) { ncShowErr('Invalid binary — use 0 and 1 only.'); return; }
-  const val = parseInt(raw, 2);
-  if (isNaN(val)) return;
-  ncUpdate(val);
-}
-
-function ncFromOct() {
-  const raw = document.getElementById('nc-oct').value.trim().replace(/\s/g,'');
-  if (!raw) { ncClear(); return; }
-  if (!/^[0-7]+$/.test(raw)) { ncShowErr('Invalid octal — use digits 0–7 only.'); return; }
-  const val = parseInt(raw, 8);
-  if (isNaN(val)) return;
-  ncUpdate(val);
-}
+window.addEventListener('load',()=>{stmOvHzToSec();stmPwmHzToSec();stmCapHzToSec();stmCalc();edvCalc();});
 </script>
 </body>
 </html>
